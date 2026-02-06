@@ -163,6 +163,15 @@ def task_run_notebooks():
 ## Task below is for LaTeX compilation
 ###############################################################
 
+def task_example_plot():
+    """Generate an example plot"""
+    return {
+        "actions": [
+            "ipython ./src/example_plot.py",
+        ],
+        "targets": [OUTPUT_DIR / "example_plot.html"],
+        "file_dep": ["./src/example_plot.py"],
+    }
 
 def task_compile_latex_docs():
     """Compile the LaTeX documents to PDFs"""

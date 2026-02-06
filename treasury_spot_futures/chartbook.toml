@@ -34,5 +34,44 @@ notebook_path = "_output/01_example_notebook_interactive.ipynb"
 [dataframes]
 
 
+[dataframes.bloomberg]
+dataframe_name = "Bloomberg Treasury Futures and OIS Data"
+short_description_df = "Treasury futures contracts (2Y, 5Y, 10Y, 30Y, Ultra 10Y) and OIS rates data from Bloomberg Terminal."
+data_sources = ["Bloomberg Terminal"]
+data_providers = ["Bloomberg L.P."]
+links_to_data_providers = ["https://www.bloomberg.com/professional/solution/bloomberg-terminal/"]
+topic_tags = ["Treasury Futures", "Interest Rate Swaps", "OIS", "Fixed Income"]
+type_of_data_access = "Proprietary"
+data_license = "Yes"
+license_expiration_date = "N/A"
+need_to_contact_provider = "Yes"
+provider_contact_info = "Bloomberg Terminal subscription required"
+restriction_on_use = "Yes - Bloomberg Terminal license required"
+how_is_pulled = "Bloomberg Terminal API via Python (xbbg package)"
+path_to_parquet_data = "./_data/bloomberg.parquet"
+path_to_excel_data = ""
+date_col = "Date"
+dataframe_docs_path = ""
+
+
 [charts]
+
+
+[charts.treasury_futures_prices]
+chart_name = "Treasury Futures Prices Over Time"
+short_description_chart = "Time series visualization of Treasury futures prices across different maturities (2Y, 5Y, 10Y, 30Y, Ultra 10Y) showing first and second generic contracts."
+dataframe_id = "bloomberg"
+topic_tags = ["Treasury Futures", "Fixed Income", "Prices"]
+data_series_start_date = "2010-01-01"
+data_frequency = "Daily"
+observation_period = "Weekday"
+lag_in_data_release = "One day"
+data_release_dates = "Weekday"
+seasonal_adjustment = "None"
+units = "Price"
+data_series = "TY1 Comdty, FV1 Comdty, TU1 Comdty, US1 Comdty, WN1 Comdty, TY2 Comdty, FV2 Comdty, TU2 Comdty, US2 Comdty, WN2 Comdty"
+mnemonic = ""
+path_to_html_chart = "./_output/treasury_futures_prices.html"
+path_to_excel_chart = ""
+chart_docs_path = ""
 
