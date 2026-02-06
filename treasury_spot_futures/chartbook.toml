@@ -26,7 +26,7 @@ README_file_path = "./README.md"
 [notebooks.01_example_notebook_interactive]
 notebook_name = "Example Notebook Interactive"
 notebook_description = "Example notebook for demonstrating how to construct a Chartbook notebook."
-notebook_path = "_output/01_example_notebook_interactive.ipynb"
+notebook_path = "_output/01_example_notebook_interactive_ipynb.ipynb"
 
 
 
@@ -51,7 +51,7 @@ how_is_pulled = "Bloomberg Terminal API via Python (xbbg package)"
 path_to_parquet_data = "./_data/bloomberg.parquet"
 path_to_excel_data = ""
 date_col = "Date"
-dataframe_docs_path = ""
+dataframe_docs_path = "./docs_src/dataframes/bloomberg.md"
 
 
 [charts]
@@ -73,5 +73,5 @@ data_series = "TY1 Comdty, FV1 Comdty, TU1 Comdty, US1 Comdty, WN1 Comdty, TY2 C
 mnemonic = ""
 path_to_html_chart = "./_output/treasury_futures_prices.html"
 path_to_excel_chart = ""
-chart_docs_path = ""
+chart_docs_path = "./docs_src/charts/treasury_futures_prices.md"
 

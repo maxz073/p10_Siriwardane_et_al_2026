@@ -14,6 +14,7 @@ from settings import config
 DATA_DIR = Path(config("DATA_DIR"))
 OUTPUT_DIR = Path(config("OUTPUT_DIR"))
 
+'''
 import pull_fred
 
 df_level = pull_fred.load_fred(data_dir=DATA_DIR).dropna()
@@ -94,3 +95,4 @@ latex_table_string = "\n".join(latex_table_string_split)
 path = OUTPUT_DIR / "example_table.tex"
 with open(path, "w") as text_file:
     text_file.write(latex_table_string)
+'''

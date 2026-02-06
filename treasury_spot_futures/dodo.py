@@ -84,7 +84,7 @@ def task_config():
         "clean": [],
     }
 
-
+'''
 def task_pull():
     """Pull data from external sources"""
     yield {
@@ -98,7 +98,7 @@ def task_pull():
         "file_dep": ["./src/settings.py", "./src/pull_bloomberg.py"],
         "clean": [],
     }
-
+'''
 
 def task_summary_stats():
     """Generate summary statistics tables"""
@@ -173,6 +173,7 @@ def task_example_plot():
         "file_dep": ["./src/example_plot.py"],
     }
 
+
 def task_compile_latex_docs():
     """Compile the LaTeX documents to PDFs"""
     file_dep = [
@@ -210,7 +211,6 @@ def task_compile_latex_docs():
         "file_dep": file_dep,
         "clean": True,
     }
-
 sphinx_targets = [
     "./docs/index.html",
 ]

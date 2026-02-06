@@ -101,8 +101,8 @@ coverage.xml
 *.log
 
 # Sphinx documentation
-docs/
-/docs_src/apidocs
+#docs/
+# /docs_src/apidocs
 
 
 # PyBuilder
