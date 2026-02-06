@@ -1,0 +1,4 @@
+Name,Metadata Complete,Object Type,Identifier,Pipeline,Missing Fields,Page Link
+Treasury Spot-Futures,False,pipeline,TR,TR,"build_commands, os_compatibility, git_repo_URL",../index.html
+Bloomberg Treasury Futures and OIS Data,True,dataframe,bloomberg,TR,,../dataframes/TR/bloomberg.html
+Treasury Futures Prices Over Time,False,chart,treasury_futures_prices,TR,data_release_timing,../charts/TR.treasury_futures_prices.html
