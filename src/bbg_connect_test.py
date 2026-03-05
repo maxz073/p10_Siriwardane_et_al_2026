@@ -7,3 +7,4 @@ try:
     print(test)
 except Exception as e:
     print(f"Connection failed: {e}")
+
