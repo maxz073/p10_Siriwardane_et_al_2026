@@ -48,3 +48,6 @@ chartbook[all]
 # Bloomberg data access
 xbbg>=0.7.7
 
+# WRDS (Wharton Research Data Services) for CRSP
+wrds
+
