@@ -30,6 +30,16 @@ TENOR_CONTRACTS = {
     "30Y": "US2 Comdty",
 }
 
+# Maturity-matched OIS: Bloomberg has 1Y–4Y (USSO1–USSO4). We use closest available.
+# 5Y/10Y/20Y/30Y use 4Y OIS as proxy when longer OIS are not in the pull.
+OIS_TENOR_MAP = {
+    "2Y": "USSO2 CMPN Curncy",
+    "5Y": "USSO4 CMPN Curncy",
+    "10Y": "USSO4 CMPN Curncy",
+    "20Y": "USSO4 CMPN Curncy",
+    "30Y": "USSO4 CMPN Curncy",
+}
+
 FIELDS_NEEDED = [
     "px_last",
     "px_volume",
@@ -59,7 +69,7 @@ def implied_repo(F, CF, P, Ab, Ae, Ic, d1, d2):
     d1 : float
         Day count from quote date to delivery (fraction of year, e.g. Act/360).
     d2 : float
-        Day count from quote date to next coupon date (fraction of year), when
+        Day count from interim coupon date to delivery (fraction of year), when
         next coupon is before delivery; else 0.
 
     Returns
@@ -140,10 +150,10 @@ def _compute_ae_ic_d1_d2(merged: pd.DataFrame, delivery_col: str = "fut_dlv_dt_f
     # d1: days from quote to delivery / 360
     df["d1"] = (df[delivery_col] - df["caldt"]).dt.days / 360.0
 
-    # d2: days from quote to next coupon / 360 when next coupon <= delivery, else 0
+    # d2: days from interim coupon date to delivery / 360 when next coupon <= delivery, else 0
     df["d2"] = 0.0
     mask = (next_cpn > df["caldt"]) & (next_cpn <= df[delivery_col])
-    df.loc[mask, "d2"] = (next_cpn.loc[mask] - df.loc[mask, "caldt"]).dt.days / 360.0
+    df.loc[mask, "d2"] = (df.loc[mask, delivery_col] - next_cpn.loc[mask]).dt.days / 360.0
 
     return df
 
@@ -273,8 +283,79 @@ def calc_spread(
     return pd.concat(frames, axis=1).sort_index()
 
 
+def _extract_ois_series(bbg_df: pd.DataFrame, ois_ticker: str) -> pd.Series:
+    """Extract OIS rate (px_last) for one ticker from Bloomberg df."""
+    s = _col(bbg_df, ois_ticker, "px_last")
+    if s is None:
+        return pd.Series(dtype=float)
+    return s.astype(float)
+
+
+def calc_arbitrage_spread(
+    implied_repo_df: pd.DataFrame | None = None,
+    bloomberg_path: Path | None = None,
+    manual_dir: Path | None = None,
+) -> pd.DataFrame:
+    """
+    Compute arbitrage spreads: futures-implied riskless rate minus maturity-matched OIS.
+
+    Spread = implied_repo (from first deferred contract) - OIS rate. Returns a
+    DataFrame of spreads over time, one column per tenor (2Y, 5Y, 10Y, 20Y, 30Y).
+
+    Parameters
+    ----------
+    implied_repo_df : pd.DataFrame, optional
+        Implied repo rates (index=Date, columns=2Y, 5Y, ...). If None, loads from
+        implied_repo_first_deferred.parquet (run calc_spread first).
+    bloomberg_path : Path, optional
+        Path to bloomberg.parquet for OIS. Default: manual_dir / "bloomberg.parquet".
+    manual_dir : Path, optional
+        data_manual directory. Default: MANUAL_DATA_DIR.
+
+    Returns
+    -------
+    pd.DataFrame
+        Index: Date. Columns: 2Y, 5Y, 10Y, 20Y, 30Y (spread in percent).
+    """
+    manual_dir = manual_dir or MANUAL_DATA_DIR
+    bbg_path = bloomberg_path or (manual_dir / "bloomberg.parquet")
+
+    if implied_repo_df is None:
+        ir_path = manual_dir / "implied_repo_first_deferred.parquet"
+        if not ir_path.exists():
+            raise FileNotFoundError(
+                f"Implied repo not found: {ir_path}. Run calc_spread() first."
+            )
+        implied_repo_df = pd.read_parquet(ir_path)
+    if "Date" in implied_repo_df.columns:
+        implied_repo_df = implied_repo_df.set_index("Date")
+    implied_repo_df.index = pd.to_datetime(implied_repo_df.index).normalize()
+
+    if not Path(bbg_path).is_file():
+        raise FileNotFoundError(f"Bloomberg data not found: {bbg_path}")
+    bbg_df = pd.read_parquet(bbg_path)
+    if "Date" in bbg_df.columns:
+        bbg_df = bbg_df.set_index("Date")
+    bbg_df.index = pd.to_datetime(bbg_df.index).normalize()
+
+    # Build OIS panel: one column per tenor (same column names as implied_repo)
+    ois_df = pd.DataFrame(index=bbg_df.index)
+    for tenor, ois_ticker in OIS_TENOR_MAP.items():
+        ois_df[tenor] = _extract_ois_series(bbg_df, ois_ticker)
+    ois_df = ois_df.reindex(columns=list(TENOR_CONTRACTS.keys()))
+
+    # Align dates: inner join so we only have dates with both implied repo and OIS
+    common = implied_repo_df.align(ois_df, join="inner", axis=0)
+    irr_aligned = common[0]
+    ois_aligned = common[1]
+
+    # Spread = implied riskless rate - OIS (both in percent)
+    spread_df = irr_aligned - ois_aligned
+    return spread_df.sort_index()
+
+
 def main():
-    """Run implied repo calculation and print a short summary."""
+    """Run implied repo and arbitrage spread calculation; print summary and save."""
     manual_dir = MANUAL_DATA_DIR
     print(f"Data directory: {manual_dir}")
 
@@ -297,6 +378,23 @@ def main():
     out_path = manual_dir / "implied_repo_first_deferred.parquet"
     result.to_parquet(out_path)
     print(f"Saved: {out_path}")
+
+    # Arbitrage spreads: implied riskless rate - maturity-matched OIS
+    try:
+        spreads = calc_arbitrage_spread(
+            implied_repo_df=result,
+            bloomberg_path=manual_dir / "bloomberg.parquet",
+            manual_dir=manual_dir,
+        )
+        if not spreads.empty:
+            print("\nArbitrage spread (implied repo - OIS), %:")
+            print(spreads.tail(10).to_string())
+            print(f"\nShape: {spreads.shape}")
+            spread_path = manual_dir / "arbitrage_spreads.parquet"
+            spreads.to_parquet(spread_path)
+            print(f"Saved: {spread_path}")
+    except FileNotFoundError as e:
+        print(f"\nArbitrage spreads skipped: {e}")
 
 
 if __name__ == "__main__":
