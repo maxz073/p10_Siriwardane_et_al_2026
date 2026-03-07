@@ -84,7 +84,7 @@ def implied_repo(F, CF, P, Ab, Ae, Ic, d1, d2):
     denominator = (d1 * (P + Ab)) - (Ic * d2)
     if denominator is None or denominator <= 0:
         return None
-    irr = (numerator * 360) / denominator
+    irr = numerator / denominator
     return irr
 
 
@@ -228,7 +228,7 @@ def calc_implied_repo_per_tenor(
         valid = (denom > 0) & d1.notna() & (d1 > 0)
         out = pd.Series(index=merged.index, dtype=float)
         out.loc[valid] = (
-            ((F * CF) + Ae + Ic - (P + Ab)).loc[valid] * 360 / denom.loc[valid]
+            ((F * CF) + Ae + Ic - (P + Ab)).loc[valid] * 10_000 / denom.loc[valid] #10_000 for decimals -> bps
         )
         return out
 
@@ -247,7 +247,7 @@ def calc_implied_repo_per_tenor(
     return result.drop_duplicates(subset=["Date"]).set_index("Date").sort_index()
 
 
-def calc_spread(
+def calc_irr(
     bloomberg_path: Path | None = None,
     irr_path: Path | None = None,
 ) -> pd.DataFrame:
@@ -362,7 +362,7 @@ def calc_arbitrage_spread(
     # Align dates: inner join so we only have dates with both implied repo and OIS
     common = implied_repo_df.align(ois_df, join="inner", axis=0)
     irr_aligned = common[0]
-    ois_aligned = common[1]
+    ois_aligned = common[1] * 100 #100 for decimals -> bps. DONT FORGET TO MOVE TO NEXT STEP
 
     # Spread = implied riskless rate - OIS (both in percent)
     spread_df = irr_aligned - ois_aligned
@@ -375,7 +375,7 @@ def main():
     print(f"Data directory: {manual_dir}")
 
     try:
-        result = calc_spread(
+        result = calc_irr(
             bloomberg_path=manual_dir / "bloomberg.parquet",
             irr_path=manual_dir,
         )
