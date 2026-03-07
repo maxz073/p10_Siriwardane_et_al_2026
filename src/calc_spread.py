@@ -22,6 +22,7 @@ MANUAL_DATA_DIR = config("MANUAL_DATA_DIR")
 
 # First deferred contract tickers (we do not use nearby 1)
 # Mapping: 2Y=TU, 5Y=FV, 10Y=TY, 20Y=WN, 30Y=US
+
 TENOR_CONTRACTS = {
     "2Y": "TU2 Comdty",
     "5Y": "FV2 Comdty",
@@ -46,6 +47,7 @@ FIELDS_NEEDED = [
     "fut_ctd_cusip",
     "fut_cnvs_factor",
     "fut_dlv_dt_first",
+    "fut_dlv_dt_last",
 ]
 
 
@@ -178,13 +180,18 @@ def calc_implied_repo_per_tenor(
 ) -> pd.DataFrame:
     """
     Compute implied repo for one tenor using first deferred contract and positive volume.
+
+    Delivery date: use fut_dlv_dt_first when implied repo > bond coupon rate (deliver
+    early), fut_dlv_dt_last when implied repo < bond coupon rate (deliver late).
     """
     raw = _extract_contract_series(bbg_df, ticker)
     if raw.empty or "px_last" not in raw.columns:
         return pd.DataFrame()
 
     raw = raw[raw["px_volume"] > 0].copy()
-    raw = raw.dropna(subset=["px_last", "fut_cnvs_factor", "fut_ctd_cusip", "fut_dlv_dt_first"])
+    raw = raw.dropna(
+        subset=["px_last", "fut_cnvs_factor", "fut_ctd_cusip", "fut_dlv_dt_first", "fut_dlv_dt_last"]
+    )
     if raw.empty:
         return pd.DataFrame()
 
@@ -204,24 +211,32 @@ def calc_implied_repo_per_tenor(
     if merged.empty:
         return pd.DataFrame()
 
-    merged = _compute_ae_ic_d1_d2(merged)
+    # Delivery date: first if implied repo > bond coupon (deliver early), last if repo < coupon (deliver late).
+    merged_first = _compute_ae_ic_d1_d2(merged.copy(), delivery_col="fut_dlv_dt_first")
+    merged_last = _compute_ae_ic_d1_d2(merged.copy(), delivery_col="fut_dlv_dt_last")
 
     P = merged["clean_price"]
     Ab = merged["accrued_interest_begin"]
     F = merged["px_last"]
     CF = merged["fut_cnvs_factor"]
-    Ae = merged["Ae"]
-    Ic = merged["Ic"]
-    d1 = merged["d1"]
-    d2 = merged["d2"]
+    coupon_rate = merged["coupon_rate"]
 
-    denom = (d1 * (P + Ab)) - (Ic * d2)
-    valid = (denom > 0) & d1.notna() & (d1 > 0)
-    irr_pct = pd.Series(index=merged.index, dtype=float)
-    irr_pct.loc[valid] = (
-        ((F * CF) + Ae + Ic - (P + Ab)).loc[valid] * 360 / denom.loc[valid]
-    )
-    irr_pct = irr_pct.reindex(merged.index)
+    def _irr_from_comp( m: pd.DataFrame ) -> pd.Series:
+        d1, d2 = m["d1"], m["d2"]
+        Ae, Ic = m["Ae"], m["Ic"]
+        denom = (d1 * (P + Ab)) - (Ic * d2)
+        valid = (denom > 0) & d1.notna() & (d1 > 0)
+        out = pd.Series(index=merged.index, dtype=float)
+        out.loc[valid] = (
+            ((F * CF) + Ae + Ic - (P + Ab)).loc[valid] * 360 / denom.loc[valid]
+        )
+        return out
+
+    irr_first = _irr_from_comp(merged_first)
+    irr_last = _irr_from_comp(merged_last)
+
+    # Use first delivery when repo > coupon, else last delivery.
+    irr_pct = irr_first.where(irr_first > coupon_rate, irr_last)
 
     result = merged[["Date"]].copy()
     result["tenor"] = tenor
