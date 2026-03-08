@@ -173,7 +173,7 @@ def _compute_ae_ic_d1_d2(merged: pd.DataFrame, delivery_col: str) -> pd.DataFram
     # Ex-coupon: coupon is included in price if caldt < ex_coupon_date <= delivery
     ex_coupon_date = next_cpn - pd.offsets.BDay(1)
     df["Ic"] = 0.0
-    mask_cpn = (df["caldt"] < ex_coupon_date) & (ex_coupon_date <= delivery)
+    mask_cpn = (df["caldt"] < ex_coupon_date) & (next_cpn <= delivery)
     df.loc[mask_cpn, "Ic"] = df.loc[mask_cpn, "coupon_cash_per_period"]
 
     # d1 = holding period from settlement to delivery (Act/360)
