@@ -26,7 +26,7 @@ pip install -r requirements.txt
 
 Also install the required TeX dependencies (Linux):
 ```bash
-sudo apt-get install -y texlive-full
+sudo apt-get install -y texlive-full # on Windows: https://tex.stackexchange.com/questions/666988/is-there-any-faster-way-to-install-texlive-on-windows
 ```
 
 Finally, run the project tasks:
