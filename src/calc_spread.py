@@ -26,14 +26,11 @@ TENOR_CONTRACTS = {
 
 # OIS by month tenor (2M–9M) for interpolation by holding period.
 # Tickers must match those pulled in pull_bloomberg (OIS_MONTH_CONTRACTS).
-OIS_MONTH_TENORS = [2, 3, 4, 5, 6, 9]  # months
+OIS_MONTH_TENORS = [2, 3, 6]  # months
 OIS_MONTH_TICKERS = {
-    2: "USSO2M CMPN Curncy",
-    3: "USSO3M CMPN Curncy",
-    4: "USSO4M CMPN Curncy",
-    5: "USSO5M CMPN Curncy",
-    6: "USSO6M CMPN Curncy",
-    9: "USSO9M CMPN Curncy",
+    2: "USSOB CMPN Curncy",
+    3: "USSOC CMPN Curncy",
+    6: "USSOF CMPN Curncy",
 }
 
 FIELDS_NEEDED = [
