@@ -221,7 +221,7 @@ FUTURES_FIELDS_BDH = [
     "PX_LAST",                 # <- use consistent uppercase
     "FUT_CTD_CUSIP",           # this one DOES come through historically for you
     "FUT_CNVS_FACTOR",         # conversion factor (historical via bdh)
-    "FUT_DLV_DT_FIRST",
+    "FUT_DLV_DT_FIRST", # If this doesn't come through, we'll just take the first & last delivery dates as the first & last weekdays of the month.
     "FUT_DLV_DT_LAST",
     "FUT_CONT_SIZE",
     "FUT_TICK_SIZE",
@@ -232,8 +232,8 @@ FUTURES_FIELDS_BDH = [
 
 # Reference/static-ish fields (bdp)
 FUTURES_FIELDS_BDP = [
-    "FUT_DLV_DT_FIRST",
-    "FUT_DLV_DT_LAST",
+    #"FUT_DLV_DT_FIRST",
+    #"FUT_DLV_DT_LAST",
     "FUT_CONT_SIZE",
     "FUT_TICK_SIZE",
     "FUT_VAL_PT",
