@@ -1,10 +1,8 @@
 """
-Implied repo rate for Treasury futures (first deferred contract, volume > 0).
-IRR = max(IRR using first delivery date, IRR using last delivery date).
-Delivery dates: fut_dlv_dt_first = first weekday of current_contract_month_yr,
-fut_dlv_dt_last = last weekday of current_contract_month_yr (computed from Bloomberg
-current_contract_month_yr, e.g. "MAR 25").
-Data: data_manual/bloomberg.parquet, data_manual/TFZ_IRR.parquet.
+This module calculates the implied repo rate for Treasury futures and
+the arbitrage spread between the implied repo rate and the OIS rate.
+
+Data Inputs: data_manual/bloomberg.parquet, data_manual/TFZ_IRR.parquet.
 """
 
 from pathlib import Path
