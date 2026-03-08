@@ -1,17 +1,8 @@
 """
-<<<<<<< HEAD
-Implied repo rate for Treasury futures (first deferred contract, volume > 0).
-IRR = max(IRR using first delivery date, IRR using last delivery date).
-Delivery dates: fut_dlv_dt_first = first weekday of current_contract_month_yr,
-fut_dlv_dt_last = last weekday of current_contract_month_yr (computed from Bloomberg
-current_contract_month_yr, e.g. "MAR 25").
-Data: data_manual/bloomberg.parquet, data_manual/TFZ_IRR.parquet.
-=======
 This module calculates the implied repo rate for Treasury futures and
 the arbitrage spread between the implied repo rate and the OIS rate.
 
 Data Inputs: data_manual/bloomberg.parquet, data_manual/TFZ_IRR.parquet.
->>>>>>> 7b7d79c6793515e936adb9f83e34b0b603ab9da5
 """
 
 from pathlib import Path
@@ -163,11 +154,30 @@ def _compute_ae_ic_d1_d2(merged: pd.DataFrame, delivery_col: str) -> pd.DataFram
     accrued_days_end = (delivery - last_cpn_before_delivery).dt.days
     df["Ae"] = df["coupon_cash_per_period"] * accrued_days_end / period_days.replace(0, 1)
 
+    # Settlement: T+1 business day (carry starts on settlement, not trade date)
+    settlement_date = df["caldt"] + pd.offsets.BDay(1)
+
+    # Ab = accrued interest at settlement (not at caldt), so carry uses correct dirty price
+    last_cpn_before_settlement = prev_cpn.where(settlement_date < next_cpn, next_cpn)
+    period_end_settlement = next_cpn.where(
+        settlement_date < next_cpn, next_cpn + pd.DateOffset(months=6)
+    )
+    period_days_settlement = (period_end_settlement - last_cpn_before_settlement).dt.days
+    accrued_days_settlement = (settlement_date - last_cpn_before_settlement).dt.days
+    df["Ab"] = (
+        df["coupon_cash_per_period"]
+        * accrued_days_settlement
+        / period_days_settlement.replace(0, 1)
+    )
+
+    # Ex-coupon: coupon is included in price if caldt < ex_coupon_date <= delivery
+    ex_coupon_date = next_cpn - pd.offsets.BDay(1)
     df["Ic"] = 0.0
-    mask_cpn = (next_cpn > df["caldt"]) & (next_cpn <= df[delivery_col])
+    mask_cpn = (df["caldt"] < ex_coupon_date) & (ex_coupon_date <= delivery)
     df.loc[mask_cpn, "Ic"] = df.loc[mask_cpn, "coupon_cash_per_period"]
 
-    df["d1"] = (df[delivery_col] - df["caldt"]).dt.days / 360.0
+    # d1 = holding period from settlement to delivery (Act/360)
+    df["d1"] = (delivery - settlement_date).dt.days / 360.0
     df["d2"] = 0.0
     df.loc[mask_cpn, "d2"] = (df.loc[mask_cpn, delivery_col] - next_cpn.loc[mask_cpn]).dt.days / 360.0
     return df
@@ -221,12 +231,12 @@ def calc_implied_repo_per_tenor(
     if merged.empty:
         return pd.DataFrame()
 
-    P, Ab = merged["clean_price"], merged["accrued_interest_begin"]
+    P = merged["clean_price"]
     F, CF = merged["px_last"], merged["fut_cnvs_factor"]
     m_first = _compute_ae_ic_d1_d2(merged.copy(), "fut_dlv_dt_first")
     m_last = _compute_ae_ic_d1_d2(merged.copy(), "fut_dlv_dt_last")
-    irr_first = _irr_series(merged, m_first, P, Ab, F, CF)
-    irr_last = _irr_series(merged, m_last, P, Ab, F, CF)
+    irr_first = _irr_series(merged, m_first, P, m_first["Ab"], F, CF)
+    irr_last = _irr_series(merged, m_last, P, m_last["Ab"], F, CF)
     irr_both = pd.concat([irr_first, irr_last], axis=1)
     irr_pct = irr_both.max(axis=1)
     # Holding period (days) for the delivery that achieved max(IRR); d1 is in years (Act/360)
