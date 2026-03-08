@@ -40,5 +40,13 @@ def determine_delivery_date(repo_rate, coupon_rate, fut_dlv_dt_first, fut_dlv_dt
     Based on this, we either return "fut_dlv_dt_first" or "fut_dlv_dt_last", the string column name for the first and last delivery date, respectively, from the bloomberg data.
 
     Input map:
-    - repo_rate: sourced from 
+    - repo_rate: sourced from "px_last" column specifically for OIS in bloomberg data
+    - coupon_rate: from "tcouprt" column in CRSP iss.tcouprt
+    - fut_dlv_dt_first: from "fut_dlv_dt_first" column in bloomberg data
+    - fut_dlv_dt_last: from "fut_dlv_dt_last" column in bloomberg data
     """
+
+    if repo_rate > coupon_rate:
+        return fut_dlv_dt_first
+    else:
+        return fut_dlv_dt_last
