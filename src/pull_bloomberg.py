@@ -58,7 +58,15 @@ FUTURES_FIELDS = [
 # If you'd like basket-level IDs later, this is where you'd add:
 # "FUT_DELIV_BASKET" (often better accessed via DES/CTD screens than bdh)
 
-# OIS contracts
+# OIS contracts (including 2M–9M for holding-period interpolation in calc_spread)
+OIS_MONTH_CONTRACTS = [
+    "USSO2M CMPN Curncy",
+    "USSO3M CMPN Curncy",
+    "USSO4M CMPN Curncy",
+    "USSO5M CMPN Curncy",
+    "USSO6M CMPN Curncy",
+    "USSO9M CMPN Curncy",
+]
 OIS_CONTRACTS = [
     "USSO1Z CMPN Curncy",
     "USSOA CMPN Curncy",
@@ -69,6 +77,7 @@ OIS_CONTRACTS = [
     "USSO2 CMPN Curncy",
     "USSO3 CMPN Curncy",
     "USSO4 CMPN Curncy",
+    *OIS_MONTH_CONTRACTS,
 ]
 
 OIS_FIELDS = [
@@ -205,11 +214,11 @@ import pandas as pd
 from settings import config
 
 DATA_DIR = config("DATA_DIR")
-START_DATE = "2025-01-01"
-END_DATE = "2025-12-31"
+START_DATE = "2010-01-01"
+END_DATE = "2026-02-28"
 
 FUTURES_CONTRACTS = [
-    "TY1 Comdty", "FV1 Comdty", "TU1 Comdty", "US1 Comdty", "WN1 Comdty",
+    #"TY1 Comdty", "FV1 Comdty", "TU1 Comdty", "US1 Comdty", "WN1 Comdty",
     "TY2 Comdty", "FV2 Comdty", "TU2 Comdty", "US2 Comdty", "WN2 Comdty",
 ]
 
@@ -221,33 +230,32 @@ FUTURES_FIELDS_BDH = [
     "PX_LAST",                 # <- use consistent uppercase
     "FUT_CTD_CUSIP",           # this one DOES come through historically for you
     "FUT_CNVS_FACTOR",         # conversion factor (historical via bdh)
-    "FUT_DLV_DT_FIRST",
-    "FUT_DLV_DT_LAST",
-    "FUT_CONT_SIZE",
-    "FUT_TICK_SIZE",
-    "FUT_VAL_PT",
-    "FUT_CTD_ISIN",
-    "FUT_CTD_ID_BB_GLOBAL",
+    #"FUT_DLV_DT_FIRST", # If this doesn't come through, we'll just take the first & last delivery dates as the first & last weekdays of the month.
+    #"FUT_DLV_DT_LAST",
+    #"FUT_CONT_SIZE",
+    #"FUT_TICK_SIZE",
+    #"FUT_VAL_PT",
+    #"FUT_CTD_ISIN",
+    #"FUT_CTD_ID_BB_GLOBAL",
 ]
 
 # Reference/static-ish fields (bdp)
 FUTURES_FIELDS_BDP = [
-    "FUT_DLV_DT_FIRST",
-    "FUT_DLV_DT_LAST",
-    "FUT_CONT_SIZE",
-    "FUT_TICK_SIZE",
-    "FUT_VAL_PT",
-    "FUT_CTD_ISIN",
-    "FUT_CTD_ID_BB_GLOBAL",
+    #"FUT_DLV_DT_FIRST",
+    #"FUT_DLV_DT_LAST",
+    #"FUT_CONT_SIZE",
+    #"FUT_TICK_SIZE",
+    #"FUT_VAL_PT",
+    #"FUT_CTD_ISIN",
+    #"FUT_CTD_ID_BB_GLOBAL",
     # keep CUSIP too, for cross-checking snapshot vs time-series
-    "FUT_CTD_CUSIP",
-    "FUT_CNVS_FACTOR"
+    #"FUT_CTD_CUSIP",
+    #"FUT_CNVS_FACTOR"
 ]
 
 OIS_CONTRACTS = [
-    "USSO1Z CMPN Curncy", "USSOA CMPN Curncy", "USSOB CMPN Curncy",
-    "USSOC CMPN Curncy", "USSOF CMPN Curncy", "USSO1 CMPN Curncy",
-    "USSO2 CMPN Curncy", "USSO3 CMPN Curncy", "USSO4 CMPN Curncy",
+    "USSOB CMPN Curncy", "USSOC CMPN Curncy", "USSOD CMPN Curncy",
+    "USSOE CMPN Curncy", "USSOF CMPN Curncy", "USSOI CMPN Curncy",
 ]
 OIS_FIELDS = ["PX_LAST"]
 
