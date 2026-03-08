@@ -264,8 +264,8 @@ def load_CRSP_treasury_for_irr(data_dir=DATA_DIR):
 if __name__ == "__main__":
     # Optional: restrict to your Bloomberg CTD cusips later
     df = pull_CRSP_treasury_for_irr(
-        start_date="2025-01-01",
-        end_date="2025-12-31",
+        start_date="2010-01-01",
+        end_date="2026-02-28",
         wrds_username=WRDS_USERNAME,
         cusips=None,
     )
