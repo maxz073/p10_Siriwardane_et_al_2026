@@ -127,7 +127,7 @@ def _load_irr_bonds(manual_dir: Path) -> pd.DataFrame:
     return df
 
 
-def _compute_ae_ic_d1_d2(merged: pd.DataFrame, delivery_col: str = "fut_dlv_dt_first") -> pd.DataFrame:
+def _compute_ae_ic_d1_d2(merged: pd.DataFrame, delivery_col: str) -> pd.DataFrame:
     """Add Ae, Ic, d1, d2 for the implied repo formula."""
     df = merged.copy()
     df[delivery_col] = pd.to_datetime(df[delivery_col])
@@ -137,11 +137,17 @@ def _compute_ae_ic_d1_d2(merged: pd.DataFrame, delivery_col: str = "fut_dlv_dt_f
     freq = df.get("coupon_frequency", 2)
     df["coupon_cash_per_period"] = df["coupon_rate"] / freq
 
-    # Ae: accrued interest at delivery
+    # Ae: accrued interest at delivery = interest from last coupon payment (before delivery) until delivery date.
+    # prev/next_coupon are relative to quote date; we need the coupon date that is immediately before delivery.
     next_cpn = pd.to_datetime(df["next_coupon_date"])
     prev_cpn = pd.to_datetime(df["prev_coupon_date"])
-    period_days = (next_cpn - prev_cpn).dt.days
-    accrued_days_end = (df[delivery_col] - prev_cpn).dt.days
+    delivery = df[delivery_col]
+    # If delivery is before next_coupon, last coupon before delivery = prev_cpn; else = next_cpn (delivery in next period).
+    last_cpn_before_delivery = prev_cpn.where(delivery < next_cpn, next_cpn)
+    # End of accrual period: next_cpn when in first period, or next_cpn + 6 months when in second.
+    period_end = next_cpn.where(delivery < next_cpn, next_cpn + pd.DateOffset(months=6))
+    period_days = (period_end - last_cpn_before_delivery).dt.days
+    accrued_days_end = (delivery - last_cpn_before_delivery).dt.days
     df["Ae"] = df["coupon_cash_per_period"] * accrued_days_end / period_days.replace(0, 1)
 
     # Ic: coupon received between caldt and delivery (only if next_coupon in between)
@@ -177,12 +183,14 @@ def calc_implied_repo_per_tenor(
     irr_df: pd.DataFrame,
     tenor: str,
     ticker: str,
+    ois_series: pd.Series | None = None,
 ) -> pd.DataFrame:
     """
     Compute implied repo for one tenor using first deferred contract and positive volume.
 
-    Delivery date: use fut_dlv_dt_first when implied repo > bond coupon rate (deliver
-    early), fut_dlv_dt_last when implied repo < bond coupon rate (deliver late).
+    Delivery date: use fut_dlv_dt_first when OIS rate > bond coupon rate (deliver
+    early), fut_dlv_dt_last when OIS rate < bond coupon rate (deliver late).
+    Uses the true risk-free (OIS) rate for this choice, not the implied repo.
     """
     raw = _extract_contract_series(bbg_df, ticker)
     if raw.empty or "px_last" not in raw.columns:
@@ -211,32 +219,36 @@ def calc_implied_repo_per_tenor(
     if merged.empty:
         return pd.DataFrame()
 
-    # Delivery date: first if implied repo > bond coupon (deliver early), last if repo < coupon (deliver late).
-    merged_first = _compute_ae_ic_d1_d2(merged.copy(), delivery_col="fut_dlv_dt_first")
-    merged_last = _compute_ae_ic_d1_d2(merged.copy(), delivery_col="fut_dlv_dt_last")
-
     P = merged["clean_price"]
     Ab = merged["accrued_interest_begin"]
     F = merged["px_last"]
     CF = merged["fut_cnvs_factor"]
     coupon_rate = merged["coupon_rate"]
 
-    def _irr_from_comp( m: pd.DataFrame ) -> pd.Series:
-        d1, d2 = m["d1"], m["d2"]
-        Ae, Ic = m["Ae"], m["Ic"]
-        denom = (d1 * (P + Ab)) - (Ic * d2)
-        valid = (denom > 0) & d1.notna() & (d1 > 0)
-        out = pd.Series(index=merged.index, dtype=float)
-        out.loc[valid] = (
-            ((F * CF) + Ae + Ic - (P + Ab)).loc[valid] * 10_000 / denom.loc[valid] #10_000 for decimals -> bps
-        )
-        return out
+    # Choose delivery date from rule: first when OIS > coupon, last when OIS <= coupon. Default first when OIS missing.
+    if ois_series is not None:
+        ois_series = ois_series.copy()
+        ois_series.index = pd.to_datetime(ois_series.index).normalize()
+        ois_rate = merged["Date"].map(ois_series)
+        use_first = ois_rate > coupon_rate
+    else:
+        use_first = pd.Series(True, index=merged.index)
 
-    irr_first = _irr_from_comp(merged_first)
-    irr_last = _irr_from_comp(merged_last)
+    # Compute Ae, Ic, d1, d2 using the chosen delivery date per row (first or last by rule).
+    merged_first = _compute_ae_ic_d1_d2(merged.copy(), delivery_col="fut_dlv_dt_first")
+    merged_last = _compute_ae_ic_d1_d2(merged.copy(), delivery_col="fut_dlv_dt_last")
+    merged_computed = merged.copy()
+    for col in ("Ae", "Ic", "d1", "d2"):
+        merged_computed[col] = merged_first[col].where(use_first.values, merged_last[col].values)
 
-    # Use first delivery when repo > coupon, else last delivery.
-    irr_pct = irr_first.where(irr_first > coupon_rate, irr_last)
+    d1, d2 = merged_computed["d1"], merged_computed["d2"]
+    Ae, Ic = merged_computed["Ae"], merged_computed["Ic"]
+    denom = (d1 * (P + Ab)) - (Ic * d2)
+    valid = (denom > 0) & d1.notna() & (d1 > 0)
+    irr_pct = pd.Series(index=merged.index, dtype=float)
+    irr_pct.loc[valid] = (
+        ((F * CF) + Ae + Ic - (P + Ab)).loc[valid] * 10_000 / denom.loc[valid]
+    )
 
     result = merged[["Date"]].copy()
     result["tenor"] = tenor
@@ -287,7 +299,13 @@ def calc_irr(
 
     frames = []
     for tenor, ticker in TENOR_CONTRACTS.items():
-        one = calc_implied_repo_per_tenor(bbg_df, irr_df, tenor, ticker)
+        ois_series = _extract_ois_series(bbg_df, OIS_TENOR_MAP[tenor])
+        if ois_series.empty or ois_series.notna().sum() == 0:
+            ois_series = None
+        else:
+            if ois_series.max() < 10:
+                ois_series = ois_series * 100
+        one = calc_implied_repo_per_tenor(bbg_df, irr_df, tenor, ticker, ois_series=ois_series)
         if not one.empty:
             one = one[["implied_repo_pct"]].rename(columns={"implied_repo_pct": tenor})
             frames.append(one)
@@ -412,5 +430,200 @@ def main():
         print(f"\nArbitrage spreads skipped: {e}")
 
 
+def walkthrough_one_date(
+    date=None,
+    bloomberg_path: Path | None = None,
+    irr_path: Path | None = None,
+) -> None:
+    """
+    For one date, print all inputs and intermediate steps to get IRR for each tenor.
+    Useful to trace the full calculation. If date is None, uses the first date
+    that has valid data for at least one tenor.
+    """
+    manual_dir = irr_path or MANUAL_DATA_DIR
+    bbg_path = bloomberg_path or (manual_dir / "bloomberg.parquet")
+    if Path(bbg_path).is_file():
+        bbg_df = pd.read_parquet(bbg_path)
+    else:
+        bbg_df = load_bloomberg(manual_dir)
+    if "Date" in bbg_df.columns:
+        bbg_df = bbg_df.set_index("Date")
+    bbg_df.index = pd.to_datetime(bbg_df.index).normalize()
+
+    irr_df = _load_irr_bonds(manual_dir)
+    irr_df["tcusip"] = irr_df["tcusip"].astype(str).str.strip().str.strip('"')
+
+    # If no date given, find first date with at least one valid tenor
+    if date is not None:
+        walk_date = pd.Timestamp(date).normalize()
+    else:
+        for _, row in bbg_df.iterrows():
+            d = row.name
+            for tenor, ticker in TENOR_CONTRACTS.items():
+                raw = _extract_contract_series(bbg_df.loc[[d]], ticker)
+                if raw.empty or "px_last" not in raw.columns:
+                    continue
+                raw = raw[raw["px_volume"] > 0].dropna(
+                    subset=["px_last", "fut_cnvs_factor", "fut_ctd_cusip", "fut_dlv_dt_first", "fut_dlv_dt_last"]
+                )
+                if raw.empty:
+                    continue
+                raw = raw.reset_index()
+                raw["Date"] = pd.to_datetime(raw["Date"]).dt.normalize()
+                raw["fut_ctd_cusip"] = raw["fut_ctd_cusip"].astype(str).str.strip().str.strip('"')
+                merged = raw.merge(irr_df, left_on=["Date", "fut_ctd_cusip"], right_on=["caldt", "tcusip"], how="inner")
+                if not merged.empty:
+                    walk_date = d
+                    break
+            else:
+                continue
+            break
+        else:
+            print("No date with valid data found.")
+            return
+        walk_date = pd.Timestamp(walk_date).normalize()
+
+    print("=" * 70)
+    print(f"WALKTHROUGH: Single date = {walk_date.date()}")
+    print("=" * 70)
+    print("\nData sources:")
+    print("  - Bloomberg (futures): px_last, px_volume, fut_ctd_cusip, fut_cnvs_factor, fut_dlv_dt_first, fut_dlv_dt_last")
+    print("  - Bond file (TFZ_IRR): caldt, tcusip, clean_price, accrued_interest_begin, coupon_rate, next_coupon_date, prev_coupon_date")
+    print("\nIRR formula (Act/360, simple):")
+    print("  numerator   = (F*CF) + Ae + Ic - (P + Ab)")
+    print("  denominator = d1*(P+Ab) - Ic*d2")
+    print("  IRR (decimal) = numerator / denominator   →  stored as basis points (× 10_000)")
+    print("  Delivery: use FIRST date if IRR > coupon (deliver early), else LAST date.")
+    print()
+
+    for tenor, ticker in TENOR_CONTRACTS.items():
+        print("-" * 70)
+        print(f"TENOR: {tenor}  (contract: {ticker})")
+        print("-" * 70)
+
+        raw = _extract_contract_series(bbg_df, ticker)
+        if raw.empty or "px_last" not in raw.columns:
+            print("  [No Bloomberg series for this ticker]\n")
+            continue
+        raw = raw[raw["px_volume"] > 0].copy()
+        raw = raw.dropna(
+            subset=["px_last", "fut_cnvs_factor", "fut_ctd_cusip", "fut_dlv_dt_first", "fut_dlv_dt_last"]
+        )
+        if raw.empty:
+            print("  [No rows with positive volume and full fields]\n")
+            continue
+        raw = raw.reset_index()
+        raw["Date"] = pd.to_datetime(raw["Date"]).dt.normalize()
+        raw["fut_ctd_cusip"] = raw["fut_ctd_cusip"].astype(str).str.strip().str.strip('"')
+        row_date = raw["Date"] == walk_date
+        if not row_date.any():
+            print(f"  [No data for date {walk_date.date()}]\n")
+            continue
+        raw_one = raw.loc[row_date].iloc[0]
+        merged = raw.merge(irr_df, left_on=["Date", "fut_ctd_cusip"], right_on=["caldt", "tcusip"], how="inner")
+        merged_one = merged[(merged["Date"] == walk_date)]
+        if merged_one.empty:
+            print(f"  [No bond match for CTD CUSIP on this date]\n")
+            continue
+        merged_one = merged_one.iloc[0]
+
+        # Inputs from Bloomberg
+        F = float(merged_one["px_last"])
+        CF = float(merged_one["fut_cnvs_factor"])
+        cusip = merged_one["fut_ctd_cusip"]
+        dlv_first = merged_one["fut_dlv_dt_first"]
+        dlv_last = merged_one["fut_dlv_dt_last"]
+        vol = merged_one["px_volume"]
+        print("  INPUTS (Bloomberg, first deferred):")
+        print(f"    F (futures price)     = {F}")
+        print(f"    CF (conversion factor)= {CF}")
+        print(f"    CTD CUSIP             = {cusip}")
+        print(f"    fut_dlv_dt_first      = {dlv_first}")
+        print(f"    fut_dlv_dt_last       = {dlv_last}")
+        print(f"    px_volume             = {vol}")
+
+        P = float(merged_one["clean_price"])
+        Ab = float(merged_one["accrued_interest_begin"])
+        coupon_rate = float(merged_one["coupon_rate"])
+        next_cpn = merged_one["next_coupon_date"]
+        prev_cpn = merged_one["prev_coupon_date"]
+        print("  INPUTS (Bond file, matched on date + CUSIP):")
+        print(f"    P (clean price)       = {P}")
+        print(f"    Ab (accrued @ begin)  = {Ab}")
+        print(f"    coupon_rate           = {coupon_rate}")
+        print(f"    next_coupon_date      = {next_cpn}")
+        print(f"    prev_coupon_date      = {prev_cpn}")
+        print(f"    P + Ab (dirty price)  = {P + Ab}")
+
+        one_row = merged_one.to_frame().T.reset_index(drop=True)
+        merged_first = _compute_ae_ic_d1_d2(one_row.copy(), delivery_col="fut_dlv_dt_first").iloc[0]
+        merged_last = _compute_ae_ic_d1_d2(one_row.copy(), delivery_col="fut_dlv_dt_last").iloc[0]
+
+        for label, m in [("First delivery (early)", merged_first), ("Last delivery (late)", merged_last)]:
+            Ae = float(m["Ae"])
+            Ic = float(m["Ic"])
+            d1 = float(m["d1"])
+            d2 = float(m["d2"])
+            num = (F * CF) + Ae + Ic - (P + Ab)
+            denom = (d1 * (P + Ab)) - (Ic * d2)
+            irr_decimal = num / denom if denom > 0 else None
+            irr_bps = (num * 10_000 / denom) if denom > 0 else None
+            print(f"  {label}:")
+            print(f"    Ae = {Ae:.6f},  Ic = {Ic:.6f},  d1 = {d1:.6f},  d2 = {d2:.6f}")
+            print(f"    numerator   = (F*CF)+Ae+Ic-(P+Ab) = {num:.6f}")
+            print(f"    denominator = d1*(P+Ab)-Ic*d2   = {denom:.6f}")
+            print(f"    IRR (decimal) = {irr_decimal:.6f}" if irr_decimal is not None else "    IRR = invalid (denom <= 0)")
+            if irr_bps is not None:
+                print(f"    IRR (bps)    = {irr_bps:.2f}")
+
+        irr_first_bps = (merged_first["d1"] * (P + Ab) - merged_first["Ic"] * merged_first["d2"])
+        if irr_first_bps > 0:
+            irr_first_val = ((F * CF) + merged_first["Ae"] + merged_first["Ic"] - (P + Ab)) * 10_000 / irr_first_bps
+        else:
+            irr_first_val = None
+        irr_last_denom = (merged_last["d1"] * (P + Ab) - merged_last["Ic"] * merged_last["d2"])
+        if irr_last_denom > 0:
+            irr_last_val = ((F * CF) + merged_last["Ae"] + merged_last["Ic"] - (P + Ab)) * 10_000 / irr_last_denom
+        else:
+            irr_last_val = None
+
+        # Same rule as in calc_implied_repo_per_tenor: use OIS (true repo) vs coupon for delivery choice
+        ois_ticker = OIS_TENOR_MAP.get(tenor)
+        ois_val = None
+        if ois_ticker is not None:
+            ois_series = _extract_ois_series(bbg_df, ois_ticker)
+            if not ois_series.empty and walk_date in ois_series.index:
+                ois_val = float(ois_series.loc[walk_date])
+                if ois_val is not None and ois_val < 10:
+                    ois_val = ois_val * 100
+        if ois_val is not None and ois_val > coupon_rate:
+            chosen = "first (early)"
+            final_bps = irr_first_val
+        elif ois_val is not None and ois_val <= coupon_rate:
+            chosen = "last (late)"
+            final_bps = irr_last_val
+        elif ois_val is None and irr_last_val is not None:
+            chosen = "last (late)"
+            final_bps = irr_last_val
+        elif irr_first_val is not None:
+            chosen = "first (early)"
+            final_bps = irr_first_val
+        else:
+            chosen = "N/A"
+            final_bps = None
+        ois_msg = f"OIS = {ois_val:.2f}%" if ois_val is not None else "OIS = N/A"
+        print(f"  Coupon rate = {coupon_rate}  ({ois_msg})  →  use {chosen}  (OIS > coupon ⇒ early).")
+        print(f"  FINAL implied_repo for {tenor}: {final_bps:.2f} bps" if final_bps is not None else f"  FINAL: invalid")
+        print()
+
+    print("=" * 70)
+    print("Done.")
+
+
 if __name__ == "__main__":
-    main()
+    import sys
+    if len(sys.argv) > 1 and sys.argv[1].lower() == "walkthrough":
+        date_arg = sys.argv[2] if len(sys.argv) > 2 else None
+        walkthrough_one_date(date=date_arg)
+    else:
+        main()
