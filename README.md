@@ -19,9 +19,14 @@ First, create a virtual environment and activate it:
 python -m venv .venv
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 ```
-Then install the dependencies:
+Then install the python dependencies:
 ```bash
 pip install -r requirements.txt
+```
+
+Also install the required TeX dependencies (Linux):
+```bash
+sudo apt-get install -y texlive-full
 ```
 
 Finally, run the project tasks:

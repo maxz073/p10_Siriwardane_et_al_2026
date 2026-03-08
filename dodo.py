@@ -1,60 +1,43 @@
-"""Run or update the project. This file uses the `doit` Python package. It works
-like a Makefile, but is Python-based
+"""Run or update the project with PyDoit."""
 
-"""
-
-#######################################
-## Configuration and Helpers for PyDoit
-#######################################
-## Make sure the src folder is in the path
-import sys
-
-sys.path.insert(1, "./src/")
-
+import glob
 import shutil
+import subprocess
+import sys
 from os import environ
 from pathlib import Path
 
+from doit.action import CmdAction
+
+sys.path.insert(1, "./src/")
+
 from settings import config
 
-DOIT_CONFIG = {"backend": "sqlite3", "dep_file": "./.doit-db.sqlite"}
+DOIT_CONFIG = {
+    "backend": "sqlite3",
+    "dep_file": "./.doit-db.sqlite",
+    "default_tasks": ["full_run"],
+}
 
+DATA_DIR = Path(config("DATA_DIR"))
+MANUAL_DATA_DIR = Path(config("MANUAL_DATA_DIR"))
+OUTPUT_DIR = Path(config("OUTPUT_DIR"))
 
-BASE_DIR = config("BASE_DIR")
-DATA_DIR = config("DATA_DIR")
-MANUAL_DATA_DIR = config("MANUAL_DATA_DIR")
-OUTPUT_DIR = config("OUTPUT_DIR")
-OS_TYPE = config("OS_TYPE")
-USER = config("USER")
-
-## Helpers for handling Jupyter Notebook tasks
 environ["PYDEVD_DISABLE_FILE_VALIDATION"] = "1"
 
+
 # fmt: off
-## Helper functions for automatic execution of Jupyter notebooks
 def jupyter_execute_notebook(notebook_path):
-    return f"jupyter nbconvert --execute --to notebook --ClearMetadataPreprocessor.enabled=True --inplace {notebook_path}"
+    return f"jupyter nbconvert --execute --to notebook --ClearMetadataPreprocessor.enabled=True --log-level WARN --inplace {notebook_path}"
 def jupyter_to_html(notebook_path, output_dir=OUTPUT_DIR):
-    return f"jupyter nbconvert --to html --output-dir={output_dir} {notebook_path}"
+    return f"jupyter nbconvert --to html --log-level WARN --output-dir={output_dir} {notebook_path}"
 def jupyter_to_md(notebook_path, output_dir=OUTPUT_DIR):
-    """Requires jupytext"""
-    return f"jupytext --to markdown --output-dir={output_dir} {notebook_path}"
+    return f"jupytext --to markdown --log-level WARN --output-dir={output_dir} {notebook_path}"
 def jupyter_clear_output(notebook_path):
-    """Clear the output of a notebook"""
-    return f"jupyter nbconvert --ClearOutputPreprocessor.enabled=True --ClearMetadataPreprocessor.enabled=True --inplace {notebook_path}"
+    return f"jupyter nbconvert --log-level WARN --ClearOutputPreprocessor.enabled=True --ClearMetadataPreprocessor.enabled=True --inplace {notebook_path}"
+def jupytext_to_notebook(pyfile_path, notebook_path):
+    return f"jupytext --to notebook --output {notebook_path} {pyfile_path}"
 # fmt: on
-
-
-def mv(from_path, to_path):
-    """Move a file to a folder"""
-    from_path = Path(from_path)
-    to_path = Path(to_path)
-    to_path.mkdir(parents=True, exist_ok=True)
-    if OS_TYPE == "nix":
-        command = f"mv {from_path} {to_path}"
-    else:
-        command = f"move {from_path} {to_path}"
-    return command
 
 
 def copy_file(origin_path, destination_path, mkdir=True):
@@ -70,54 +53,64 @@ def copy_file(origin_path, destination_path, mkdir=True):
     return _copy_file
 
 
-##################################
-## Begin rest of PyDoit tasks here
-##################################
+def mv_file(from_path, to_path):
+    """Move a file to a destination path (cross-platform)."""
+
+    def _mv_file():
+        src = Path(from_path)
+        dst = Path(to_path)
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        shutil.move(str(src), str(dst))
+
+    return _mv_file
 
 
-def task_config():
-    """Create empty directories for data and output if they don't exist"""
-    return {
-        "actions": ["ipython ./src/settings.py"],
-        "targets": [DATA_DIR, OUTPUT_DIR],
-        "file_dep": ["./src/settings.py"],
-        "clean": [],
-    }
+def touch_file(path):
+    """Create a Python action that touches a stamp file."""
 
-'''
-def task_pull():
-    """Pull data from external sources"""
-    yield {
-        "name": "bloomberg",
-        "doc": "Pull data from Bloomberg",
-        "actions": [
-            "ipython ./src/settings.py",
-            "ipython ./src/pull_bloomberg.py",
-        ],
-        "targets": [DATA_DIR / "bloomberg.parquet"],
-        "file_dep": ["./src/settings.py", "./src/pull_bloomberg.py"],
-        "clean": [],
-    }
-'''
+    def _touch_file():
+        stamp = Path(path)
+        stamp.parent.mkdir(parents=True, exist_ok=True)
+        stamp.touch()
 
-def task_summary_stats():
-    """Generate summary statistics tables"""
-    file_dep = ["./src/example_table.py"]
-    file_output = [
-        "example_table.tex",
-        "pandas_to_latex_simple_table1.tex",
-    ]
-    targets = [OUTPUT_DIR / file for file in file_output]
+    return _touch_file
 
-    return {
-        "actions": [
-            "ipython ./src/example_table.py",
-            "ipython ./src/pandas_to_latex_demo.py",
-        ],
-        "targets": targets,
-        "file_dep": file_dep,
-        "clean": True,
-    }
+
+def _latexmk_engine_flag():
+    """Choose the best available LaTeX engine for latexmk."""
+    if shutil.which("xelatex"):
+        return "-xelatex"
+    if shutil.which("lualatex"):
+        return "-lualatex"
+    if shutil.which("pdflatex"):
+        return "-pdf"
+    return None
+
+
+def run_latexmk(tex_file, clean=False):
+    """Create a Python action that runs latexmk with an available engine."""
+
+    def _run_latexmk():
+        if not shutil.which("latexmk"):
+            raise RuntimeError(
+                "latexmk not found in PATH. Install TeX Live (or MacTeX) with latexmk."
+            )
+
+        engine_flag = _latexmk_engine_flag()
+        if engine_flag is None:
+            raise RuntimeError(
+                "No TeX engine found (xelatex/lualatex/pdflatex). "
+                "Install TeX Live. On Ubuntu/WSL: "
+                "`sudo apt-get install texlive-xetex texlive-latex-extra`."
+            )
+
+        cmd = ["latexmk", engine_flag, "-halt-on-error"]
+        if clean:
+            cmd.append("-c")
+        cmd.extend(["-cd", tex_file])
+        subprocess.run(cmd, check=True)
+
+    return _run_latexmk
 
 
 notebook_tasks = {
@@ -128,24 +121,150 @@ notebook_tasks = {
     },
 }
 
+MANUAL_INPUTS = [
+    MANUAL_DATA_DIR / "bloomberg.parquet",
+    MANUAL_DATA_DIR / "TFZ_IRR.parquet",
+]
+
+STAGED_INPUTS = [
+    DATA_DIR / "bloomberg.parquet",
+    DATA_DIR / "TFZ_IRR.parquet",
+]
+
+SPREAD_OUTPUTS = [
+    DATA_DIR / "implied_repo_first_deferred.parquet",
+    DATA_DIR / "holding_period_days.parquet",
+    DATA_DIR / "arbitrage_spreads.parquet",
+]
+
+PLOT_OUTPUTS = [
+    OUTPUT_DIR / "treasury_futures_prices.html",
+    OUTPUT_DIR / "example_plot.png",
+]
+
+TABLE_OUTPUTS = [
+    OUTPUT_DIR / "example_table.tex",
+    OUTPUT_DIR / "pandas_to_latex_simple_table1.tex",
+]
+
+
+def task_config():
+    """Create data and output directories."""
+    return {
+        "actions": ["ipython ./src/settings.py"],
+        "targets": [DATA_DIR, OUTPUT_DIR],
+        "file_dep": ["./src/settings.py"],
+    }
+
+
+def task_stage_manual_data():
+    """Copy version-controlled input data from data_manual to DATA_DIR."""
+    return {
+        "actions": [
+            copy_file(MANUAL_DATA_DIR / "bloomberg.parquet", DATA_DIR / "bloomberg.parquet"),
+            copy_file(MANUAL_DATA_DIR / "TFZ_IRR.parquet", DATA_DIR / "TFZ_IRR.parquet"),
+        ],
+        "file_dep": MANUAL_INPUTS,
+        "targets": STAGED_INPUTS,
+        "task_dep": ["config"],
+        "clean": True,
+    }
+
+
+def task_pull_live_data():
+    """Optional: refresh source data from Bloomberg/WRDS."""
+    bloomberg_stamp = DATA_DIR / ".stamp_pull_live_bloomberg"
+    wrds_stamp = DATA_DIR / ".stamp_pull_live_crsp"
+    yield {
+        "name": "bloomberg",
+        "actions": [
+            "ipython ./src/pull_bloomberg.py",
+            touch_file(bloomberg_stamp),
+        ],
+        "file_dep": ["./src/pull_bloomberg.py", "./src/settings.py"],
+        "targets": [bloomberg_stamp],
+        "task_dep": ["config"],
+        "uptodate": [False],
+        "clean": True,
+    }
+    yield {
+        "name": "crsp_wrds",
+        "actions": [
+            "ipython ./src/pull_CRSP.py",
+            touch_file(wrds_stamp),
+        ],
+        "file_dep": ["./src/pull_CRSP.py", "./src/settings.py"],
+        "targets": [wrds_stamp],
+        "task_dep": ["config"],
+        "uptodate": [False],
+        "clean": True,
+    }
+
+
+def task_calc_spreads():
+    """Compute implied repo and arbitrage spread outputs."""
+    return {
+        "actions": [
+            "python ./src/calc_spread.py --MANUAL_DATA_DIR=./_data",
+        ],
+        "file_dep": [
+            "./src/calc_spread.py",
+            "./src/settings.py",
+            *STAGED_INPUTS,
+        ],
+        "targets": SPREAD_OUTPUTS,
+        "task_dep": ["stage_manual_data"],
+        "clean": True,
+    }
+
+
+def task_example_plot():
+    """Generate chartbook HTML chart and report-ready PNG figure."""
+    return {
+        "actions": [
+            "ipython ./src/example_plot.py",
+        ],
+        "file_dep": [
+            "./src/example_plot.py",
+            DATA_DIR / "bloomberg.parquet",
+        ],
+        "targets": PLOT_OUTPUTS,
+        "task_dep": ["stage_manual_data"],
+        "clean": True,
+    }
+
+
+def task_summary_stats():
+    """Generate LaTeX tables used by reports."""
+    return {
+        "actions": [
+            "ipython ./src/example_table.py",
+            "ipython ./src/pandas_to_latex_demo.py",
+        ],
+        "file_dep": [
+            "./src/example_table.py",
+            "./src/pandas_to_latex_demo.py",
+            DATA_DIR / "arbitrage_spreads.parquet",
+        ],
+        "targets": TABLE_OUTPUTS,
+        "task_dep": ["calc_spreads"],
+        "clean": True,
+    }
+
 
 # fmt: off
 def task_run_notebooks():
-    """Preps the notebooks for presentation format.
-    Execute notebooks if the script version of it has been changed.
-    """
+    """Convert notebook scripts, execute, and export to HTML."""
     for notebook in notebook_tasks.keys():
         pyfile_path = Path(notebook_tasks[notebook]["path"])
         notebook_path = pyfile_path.with_suffix(".ipynb")
         yield {
             "name": notebook,
             "actions": [
-                """python -c "import sys; from datetime import datetime; print(f'Start """ + notebook + """: {datetime.now()}', file=sys.stderr)" """,
-                f"jupytext --to notebook --output {notebook_path} {pyfile_path}",
+                jupytext_to_notebook(pyfile_path, notebook_path),
                 jupyter_execute_notebook(notebook_path),
                 jupyter_to_html(notebook_path),
-                mv(notebook_path, OUTPUT_DIR),
-                """python -c "import sys; from datetime import datetime; print(f'End """ + notebook + """: {datetime.now()}', file=sys.stderr)" """,
+                mv_file(notebook_path, OUTPUT_DIR / f"{notebook}.ipynb"),
             ],
             "file_dep": [
                 pyfile_path,
@@ -153,29 +272,17 @@ def task_run_notebooks():
             ],
             "targets": [
                 OUTPUT_DIR / f"{notebook}.html",
+                OUTPUT_DIR / f"{notebook}.ipynb",
                 *notebook_tasks[notebook]["targets"],
             ],
+            "task_dep": ["config"],
             "clean": True,
         }
 # fmt: on
 
-###############################################################
-## Task below is for LaTeX compilation
-###############################################################
-
-def task_example_plot():
-    """Generate an example plot"""
-    return {
-        "actions": [
-            "ipython ./src/example_plot.py",
-        ],
-        "targets": [OUTPUT_DIR / "example_plot.html"],
-        "file_dep": ["./src/example_plot.py"],
-    }
-
 
 def task_compile_latex_docs():
-    """Compile the LaTeX documents to PDFs"""
+    """Compile the LaTeX documents to PDFs."""
     file_dep = [
         "./reports/report_example.tex",
         "./reports/my_article_header.sty",
@@ -184,8 +291,9 @@ def task_compile_latex_docs():
         "./reports/my_common_header.sty",
         "./reports/report_simple_example.tex",
         "./reports/slides_simple_example.tex",
-        "./src/example_plot.py",
-        "./src/example_table.py",
+        OUTPUT_DIR / "example_plot.png",
+        OUTPUT_DIR / "example_table.tex",
+        OUTPUT_DIR / "pandas_to_latex_simple_table1.tex",
     ]
     targets = [
         "./reports/report_example.pdf",
@@ -196,46 +304,65 @@ def task_compile_latex_docs():
 
     return {
         "actions": [
-            # My custom LaTeX templates
-            "latexmk -xelatex -halt-on-error -cd ./reports/report_example.tex",  # Compile
-            "latexmk -xelatex -halt-on-error -c -cd ./reports/report_example.tex",  # Clean
-            "latexmk -xelatex -halt-on-error -cd ./reports/slides_example.tex",  # Compile
-            "latexmk -xelatex -halt-on-error -c -cd ./reports/slides_example.tex",  # Clean
-            # Simple templates based on small adjustments to Overleaf templates
-            "latexmk -xelatex -halt-on-error -cd ./reports/report_simple_example.tex",  # Compile
-            "latexmk -xelatex -halt-on-error -c -cd ./reports/report_simple_example.tex",  # Clean
-            "latexmk -xelatex -halt-on-error -cd ./reports/slides_simple_example.tex",  # Compile
-            "latexmk -xelatex -halt-on-error -c -cd ./reports/slides_simple_example.tex",  # Clean
+            run_latexmk("./reports/report_example.tex"),
+            run_latexmk("./reports/report_example.tex", clean=True),
+            run_latexmk("./reports/slides_example.tex"),
+            run_latexmk("./reports/slides_example.tex", clean=True),
+            run_latexmk("./reports/report_simple_example.tex"),
+            run_latexmk("./reports/report_simple_example.tex", clean=True),
+            run_latexmk("./reports/slides_simple_example.tex"),
+            run_latexmk("./reports/slides_simple_example.tex", clean=True),
         ],
         "targets": targets,
         "file_dep": file_dep,
+        "task_dep": ["summary_stats", "example_plot"],
         "clean": True,
     }
-sphinx_targets = [
-    "./docs/index.html",
-]
 
 
 def task_build_chartbook_site():
-    """Compile Sphinx Docs"""
+    """Build the chartbook documentation site."""
     notebook_scripts = [
-        Path(notebook_tasks[notebook]["path"])
-        for notebook in notebook_tasks.keys()
+        Path(notebook_tasks[notebook]["path"]) for notebook in notebook_tasks.keys()
     ]
-    file_dep = [
-        "./README.md",
-        "./chartbook.toml",
-        *notebook_scripts,
-    ]
+    return {
+        "actions": ["chartbook build -f"],
+        "targets": ["./docs/index.html"],
+        "file_dep": [
+            "./README.md",
+            "./chartbook.toml",
+            DATA_DIR / "bloomberg.parquet",
+            OUTPUT_DIR / "treasury_futures_prices.html",
+            *notebook_scripts,
+        ],
+        "task_dep": ["run_notebooks", "example_plot"],
+        "clean": True,
+    }
 
+
+def task_run_tests():
+    """Run pytest and write a JUnit report."""
     return {
         "actions": [
-            "chartbook build -f",
-        ],  # Use docs as build destination
-        "targets": sphinx_targets,
-        "file_dep": file_dep,
-        "task_dep": [
-            "run_notebooks",
+            CmdAction(
+                f"pytest ./src/ --junitxml={OUTPUT_DIR / 'test_results.xml'} -v",
+                shell=True,
+            ),
         ],
+        "file_dep": glob.glob("./src/*.py"),
+        "targets": [OUTPUT_DIR / "test_results.xml"],
+        "task_dep": ["config"],
         "clean": True,
+        "verbosity": 2,
+    }
+
+
+def task_full_run():
+    """Run the full local pipeline from staged inputs to final artifacts."""
+    return {
+        "actions": [],
+        "task_dep": [
+            "compile_latex_docs",
+            "build_chartbook_site",
+        ],
     }
