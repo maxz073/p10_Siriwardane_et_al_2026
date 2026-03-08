@@ -24,11 +24,14 @@ TENOR_CONTRACTS = {
 
 # OIS by month tenor (2M–9M) for interpolation by holding period.
 # Tickers must match those pulled in pull_bloomberg (OIS_MONTH_CONTRACTS).
-OIS_MONTH_TENORS = [2, 3, 6]  # months
+OIS_MONTH_TENORS = [2, 3, 4, 5, 6, 9]  # months
 OIS_MONTH_TICKERS = {
     2: "USSOB CMPN Curncy",
     3: "USSOC CMPN Curncy",
+    4: "USSOD CMPN Curncy",
+    5: "USSOE CMPN Curncy",
     6: "USSOF CMPN Curncy",
+    9: "USSOI CMPN Curncy",
 }
 
 FIELDS_NEEDED = [
@@ -173,7 +176,7 @@ def _compute_ae_ic_d1_d2(merged: pd.DataFrame, delivery_col: str) -> pd.DataFram
     # Ex-coupon: coupon is included in price if caldt < ex_coupon_date <= delivery
     ex_coupon_date = next_cpn - pd.offsets.BDay(1)
     df["Ic"] = 0.0
-    mask_cpn = (df["caldt"] < ex_coupon_date) & (next_cpn <= delivery)
+    mask_cpn = (df["caldt"] < ex_coupon_date) & (ex_coupon_date <= delivery)
     df.loc[mask_cpn, "Ic"] = df.loc[mask_cpn, "coupon_cash_per_period"]
 
     # d1 = holding period from settlement to delivery (Act/360)
