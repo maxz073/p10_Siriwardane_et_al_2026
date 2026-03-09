@@ -29,11 +29,12 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
-    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=206a6f58" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -41,7 +42,7 @@
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script src="../../_static/documentation_options.js?v=b9472d72"></script>
-    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
@@ -182,7 +183,7 @@
     </div>
 </nav></div>
         <div class="sidebar-primary-item">
-<div class="ablog-sidebar-item ablog__category">
+<div class="ablog-sidebar-item ablog__categories">
   <h3>
     <a href="../../charts/index/category.html">Categories</a>
   </h3>
@@ -228,7 +229,7 @@
 </div>
 </div>
         <div class="sidebar-primary-item">
-<div class="ablog-sidebar-item ablog__tags">
+<div class="ablog-sidebar-item ablog__tagcloud">
   <link
     rel="stylesheet"
     href="../../_static/ablog/tagcloud.css"
@@ -472,43 +473,43 @@ document.write(`
 <h2>DataFrame Glimpse<a class="headerlink" href="#dataframe-glimpse" title="Link to this heading">#</a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Rows: 4216
 Columns: 388
-$ (&#39;TY2 Comdty&#39;, &#39;fut_implied_repo_rt&#39;)        &lt;f64&gt; None
-$ (&#39;TY2 Comdty&#39;, &#39;px_volume&#39;)                  &lt;f64&gt; None
-$ (&#39;TY2 Comdty&#39;, &#39;current_contract_month_yr&#39;)  &lt;str&gt; None
-$ (&#39;TY2 Comdty&#39;, &#39;px_last&#39;)                    &lt;f64&gt; None
-$ (&#39;TY2 Comdty&#39;, &#39;fut_ctd_cusip&#39;)              &lt;str&gt; None
-$ (&#39;TY2 Comdty&#39;, &#39;fut_cnvs_factor&#39;)            &lt;f64&gt; None
-$ (&#39;FV2 Comdty&#39;, &#39;fut_implied_repo_rt&#39;)        &lt;f64&gt; None
-$ (&#39;FV2 Comdty&#39;, &#39;current_contract_month_yr&#39;)  &lt;str&gt; None
-$ (&#39;FV2 Comdty&#39;, &#39;px_last&#39;)                    &lt;f64&gt; None
-$ (&#39;FV2 Comdty&#39;, &#39;fut_ctd_cusip&#39;)              &lt;str&gt; None
-$ (&#39;FV2 Comdty&#39;, &#39;fut_cnvs_factor&#39;)            &lt;f64&gt; None
-$ (&#39;FV2 Comdty&#39;, &#39;px_volume&#39;)                  &lt;f64&gt; None
-$ (&#39;TU2 Comdty&#39;, &#39;fut_implied_repo_rt&#39;)        &lt;f64&gt; None
-$ (&#39;TU2 Comdty&#39;, &#39;current_contract_month_yr&#39;)  &lt;str&gt; None
-$ (&#39;TU2 Comdty&#39;, &#39;px_last&#39;)                    &lt;f64&gt; None
-$ (&#39;TU2 Comdty&#39;, &#39;fut_ctd_cusip&#39;)              &lt;str&gt; None
-$ (&#39;TU2 Comdty&#39;, &#39;fut_cnvs_factor&#39;)            &lt;f64&gt; None
-$ (&#39;TU2 Comdty&#39;, &#39;px_volume&#39;)                  &lt;f64&gt; None
-$ (&#39;US2 Comdty&#39;, &#39;fut_implied_repo_rt&#39;)        &lt;f64&gt; None
-$ (&#39;US2 Comdty&#39;, &#39;px_volume&#39;)                  &lt;f64&gt; None
-$ (&#39;US2 Comdty&#39;, &#39;current_contract_month_yr&#39;)  &lt;str&gt; None
-$ (&#39;US2 Comdty&#39;, &#39;px_last&#39;)                    &lt;f64&gt; None
-$ (&#39;US2 Comdty&#39;, &#39;fut_ctd_cusip&#39;)              &lt;str&gt; None
-$ (&#39;US2 Comdty&#39;, &#39;fut_cnvs_factor&#39;)            &lt;f64&gt; None
-$ (&#39;WN2 Comdty&#39;, &#39;fut_implied_repo_rt&#39;)        &lt;f64&gt; None
-$ (&#39;WN2 Comdty&#39;, &#39;current_contract_month_yr&#39;)  &lt;str&gt; None
-$ (&#39;WN2 Comdty&#39;, &#39;px_last&#39;)                    &lt;f64&gt; None
-$ (&#39;WN2 Comdty&#39;, &#39;fut_ctd_cusip&#39;)              &lt;str&gt; None
-$ (&#39;WN2 Comdty&#39;, &#39;fut_cnvs_factor&#39;)            &lt;f64&gt; None
-$ (&#39;WN2 Comdty&#39;, &#39;px_volume&#39;)                  &lt;f64&gt; None
-$ (&#39;USSOB CMPN Curncy&#39;, &#39;px_last&#39;)             &lt;f64&gt; None
-$ (&#39;USSOC CMPN Curncy&#39;, &#39;px_last&#39;)             &lt;f64&gt; None
-$ (&#39;USSOD CMPN Curncy&#39;, &#39;px_last&#39;)             &lt;f64&gt; None
-$ (&#39;USSOE CMPN Curncy&#39;, &#39;px_last&#39;)             &lt;f64&gt; None
-$ (&#39;USSOF CMPN Curncy&#39;, &#39;px_last&#39;)             &lt;f64&gt; None
-$ (&#39;USSOI CMPN Curncy&#39;, &#39;px_last&#39;)             &lt;f64&gt; None
-$ (&#39;912810EV Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;TY2 Comdty&#39;, &#39;fut_implied_repo_rt&#39;)        &lt;f64&gt; null
+$ (&#39;TY2 Comdty&#39;, &#39;px_volume&#39;)                  &lt;f64&gt; null
+$ (&#39;TY2 Comdty&#39;, &#39;current_contract_month_yr&#39;)  &lt;str&gt; null
+$ (&#39;TY2 Comdty&#39;, &#39;px_last&#39;)                    &lt;f64&gt; null
+$ (&#39;TY2 Comdty&#39;, &#39;fut_ctd_cusip&#39;)              &lt;str&gt; null
+$ (&#39;TY2 Comdty&#39;, &#39;fut_cnvs_factor&#39;)            &lt;f64&gt; null
+$ (&#39;FV2 Comdty&#39;, &#39;fut_implied_repo_rt&#39;)        &lt;f64&gt; null
+$ (&#39;FV2 Comdty&#39;, &#39;current_contract_month_yr&#39;)  &lt;str&gt; null
+$ (&#39;FV2 Comdty&#39;, &#39;px_last&#39;)                    &lt;f64&gt; null
+$ (&#39;FV2 Comdty&#39;, &#39;fut_ctd_cusip&#39;)              &lt;str&gt; null
+$ (&#39;FV2 Comdty&#39;, &#39;fut_cnvs_factor&#39;)            &lt;f64&gt; null
+$ (&#39;FV2 Comdty&#39;, &#39;px_volume&#39;)                  &lt;f64&gt; null
+$ (&#39;TU2 Comdty&#39;, &#39;fut_implied_repo_rt&#39;)        &lt;f64&gt; null
+$ (&#39;TU2 Comdty&#39;, &#39;current_contract_month_yr&#39;)  &lt;str&gt; null
+$ (&#39;TU2 Comdty&#39;, &#39;px_last&#39;)                    &lt;f64&gt; null
+$ (&#39;TU2 Comdty&#39;, &#39;fut_ctd_cusip&#39;)              &lt;str&gt; null
+$ (&#39;TU2 Comdty&#39;, &#39;fut_cnvs_factor&#39;)            &lt;f64&gt; null
+$ (&#39;TU2 Comdty&#39;, &#39;px_volume&#39;)                  &lt;f64&gt; null
+$ (&#39;US2 Comdty&#39;, &#39;fut_implied_repo_rt&#39;)        &lt;f64&gt; null
+$ (&#39;US2 Comdty&#39;, &#39;px_volume&#39;)                  &lt;f64&gt; null
+$ (&#39;US2 Comdty&#39;, &#39;current_contract_month_yr&#39;)  &lt;str&gt; null
+$ (&#39;US2 Comdty&#39;, &#39;px_last&#39;)                    &lt;f64&gt; null
+$ (&#39;US2 Comdty&#39;, &#39;fut_ctd_cusip&#39;)              &lt;str&gt; null
+$ (&#39;US2 Comdty&#39;, &#39;fut_cnvs_factor&#39;)            &lt;f64&gt; null
+$ (&#39;WN2 Comdty&#39;, &#39;fut_implied_repo_rt&#39;)        &lt;f64&gt; null
+$ (&#39;WN2 Comdty&#39;, &#39;current_contract_month_yr&#39;)  &lt;str&gt; null
+$ (&#39;WN2 Comdty&#39;, &#39;px_last&#39;)                    &lt;f64&gt; null
+$ (&#39;WN2 Comdty&#39;, &#39;fut_ctd_cusip&#39;)              &lt;str&gt; null
+$ (&#39;WN2 Comdty&#39;, &#39;fut_cnvs_factor&#39;)            &lt;f64&gt; null
+$ (&#39;WN2 Comdty&#39;, &#39;px_volume&#39;)                  &lt;f64&gt; null
+$ (&#39;USSOB CMPN Curncy&#39;, &#39;px_last&#39;)             &lt;f64&gt; null
+$ (&#39;USSOC CMPN Curncy&#39;, &#39;px_last&#39;)             &lt;f64&gt; null
+$ (&#39;USSOD CMPN Curncy&#39;, &#39;px_last&#39;)             &lt;f64&gt; null
+$ (&#39;USSOE CMPN Curncy&#39;, &#39;px_last&#39;)             &lt;f64&gt; null
+$ (&#39;USSOF CMPN Curncy&#39;, &#39;px_last&#39;)             &lt;f64&gt; null
+$ (&#39;USSOI CMPN Curncy&#39;, &#39;px_last&#39;)             &lt;f64&gt; null
+$ (&#39;912810EV Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;912810EW Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 100.302734375
 $ (&#39;912810EX Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 101.955078125
 $ (&#39;912810EY Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 102.67578125
@@ -561,218 +562,218 @@ $ (&#39;912810UB Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 98.33
 $ (&#39;912810UJ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 99.6328125
 $ (&#39;912810UL Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 102.8046875
 $ (&#39;9128282A Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 98.75
-$ (&#39;9128282F Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;9128282F Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;9128282R Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 98.068359375
-$ (&#39;9128282S Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;9128282V Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;9128282S Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;9128282V Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;9128283F Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 97.794921875
-$ (&#39;9128283L Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;9128283N Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;9128283P Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;9128283V Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;9128283L Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;9128283N Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;9128283P Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;9128283V Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;9128283W Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 98.5078125
-$ (&#39;9128283Z Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;9128284A Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;9128284B Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;9128284D Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;9128284F Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;9128284M Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;9128283Z Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;9128284A Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;9128284B Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;9128284D Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;9128284F Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;9128284M Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;9128284N Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 98.59375
-$ (&#39;9128284R Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;9128284S Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;9128284T Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;9128284U Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;9128284R Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;9128284S Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;9128284T Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;9128284U Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;9128284V Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 98.4140625
-$ (&#39;9128284X Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;9128284Z Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;9128285A Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;9128285B Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;9128285C Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;9128285D Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;9128285J Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;9128284X Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;9128284Z Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;9128285A Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;9128285B Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;9128285C Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;9128285D Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;9128285J Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;9128285M Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 98.890625
-$ (&#39;9128285P Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;9128285R Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;9128285S Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;9128285T Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;9128285U Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;9128285P Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;9128285R Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;9128285S Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;9128285T Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;9128285U Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;9128286A Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 99.900390625
 $ (&#39;9128286B Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 97.24609375
-$ (&#39;9128286G Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;9128286H Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;9128286G Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;9128286H Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;9128286L Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 99.685546875
 $ (&#39;9128286S Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 99.642578125
 $ (&#39;9128286T Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 96.18359375
-$ (&#39;9128286Y Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;9128286Z Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;9128286Y Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;9128286Z Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;9128287B Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 99.208984375
-$ (&#39;912828A3 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828A4 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828A7 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828B6 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828C2 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828C6 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828D5 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828D8 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828D9 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828F2 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828F3 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828F9 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828G3 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828G6 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828G7 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828G8 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828G9 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828GH Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828GM Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828GS Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828GW Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828HA Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828HE Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828HH Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828HM Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828HR Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828HV Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828HZ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828J2 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828J5 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828J6 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828J7 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828J8 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828JD Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828JH Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828JM Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828JR Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828JW Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828K7 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828KD Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828KJ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828KQ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828KY Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828L2 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828L3 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828L4 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828L5 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828L6 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828LJ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828LK Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828LQ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828LY Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828LZ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828M4 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828M5 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828M8 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828M9 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828MB Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828ME Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828MP Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828MR Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828MS Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828MT Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828MV Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828MW Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828N2 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828N3 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828N4 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828NA Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828ND Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828NF Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828NG Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828NL Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828NT Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828NV Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828NZ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;912828A3 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828A4 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828A7 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828B6 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828C2 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828C6 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828D5 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828D8 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828D9 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828F2 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828F3 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828F9 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828G3 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828G6 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828G7 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828G8 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828G9 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828GH Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828GM Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828GS Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828GW Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828HA Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828HE Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828HH Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828HM Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828HR Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828HV Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828HZ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828J2 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828J5 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828J6 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828J7 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828J8 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828JD Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828JH Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828JM Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828JR Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828JW Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828K7 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828KD Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828KJ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828KQ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828KY Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828L2 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828L3 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828L4 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828L5 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828L6 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828LJ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828LK Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828LQ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828LY Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828LZ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828M4 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828M5 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828M8 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828M9 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828MB Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828ME Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828MP Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828MR Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828MS Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828MT Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828MV Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828MW Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828N2 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828N3 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828N4 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828NA Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828ND Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828NF Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828NG Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828NL Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828NT Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828NV Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828NZ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;912828P4 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 99.74609375
-$ (&#39;912828P8 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828PC Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828PJ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828PL Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828PM Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828PX Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828PY Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828PZ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828QA Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828QJ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828QN Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828QP Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828QR Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;912828P8 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828PC Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828PJ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828PL Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828PM Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828PX Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828PY Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828PZ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828QA Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828QJ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828QN Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828QP Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828QR Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;912828R3 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 99.30859375
-$ (&#39;912828R6 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828R7 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828RC Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828RE Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828RF Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828RH Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828RJ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828RR Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828RU Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828RX Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828SF Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828SJ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828SM Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828SV Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828SY Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828TB Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828TJ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828TM Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828TS Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828TY Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;912828R6 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828R7 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828RC Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828RE Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828RF Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828RH Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828RJ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828RR Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828RU Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828RX Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828SF Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828SJ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828SM Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828SV Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828SY Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828TB Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828TJ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828TM Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828TS Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828TY Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;912828U2 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 98.6953125
-$ (&#39;912828U6 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828UA Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828UE Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828UN Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828UR Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828UU Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;912828U6 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828UA Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828UE Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828UN Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828UR Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828UU Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;912828V9 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 98.619140625
-$ (&#39;912828VB Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828VE Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828VK Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828VS Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828VV Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828W5 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828W6 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828W7 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828W8 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828WE Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828WJ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828WL Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828WP Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828WS Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828WY Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828WZ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;912828VB Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828VE Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828VK Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828VS Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828VV Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828W5 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828W6 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828W7 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828W8 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828WE Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828WJ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828WL Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828WP Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828WS Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828WY Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828WZ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;912828X8 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 98.5
-$ (&#39;912828XB Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828XD Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828XE Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828XF Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828XG Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828XH Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828XQ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828XR Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828XT Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828XY Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828XZ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828Y7 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;912828XB Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828XD Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828XE Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828XF Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828XG Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828XH Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828XQ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828XR Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828XT Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828XY Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828XZ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828Y7 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;912828Y9 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 99.060546875
 $ (&#39;912828YB Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 93.37890625
-$ (&#39;912828YE Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828YF Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828YH Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;912828YE Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828YF Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828YH Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;912828YS Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 93.40234375
-$ (&#39;912828YV Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828YW Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;912828YV Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828YW Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;912828YX Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 98.283203125
-$ (&#39;912828YY Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;912828YY Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;912828Z9 Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 91.87109375
-$ (&#39;912828ZC Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
-$ (&#39;912828ZF Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;912828ZC Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
+$ (&#39;912828ZF Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;912828ZQ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 87.78515625
-$ (&#39;912828ZT Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;912828ZT Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;91282CAE Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 87.0390625
-$ (&#39;91282CAJ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;91282CAJ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;91282CAV Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 87.44140625
-$ (&#39;91282CAZ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;91282CAZ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;91282CBQ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 99.4921875
 $ (&#39;91282CCB Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 89.6171875
 $ (&#39;91282CCF Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 98.865234375
@@ -782,52 +783,52 @@ $ (&#39;91282CDJ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 87.14
 $ (&#39;91282CDK Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 97.958984375
 $ (&#39;91282CDY Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 89.234375
 $ (&#39;91282CEC Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 98.16015625
-$ (&#39;91282CED Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;91282CED Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;91282CEE Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 96.359375
 $ (&#39;91282CEF Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 98.783203125
-$ (&#39;91282CEG Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;91282CEG Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;91282CEM Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 97.8046875
 $ (&#39;91282CEP Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 94.328125
 $ (&#39;91282CET Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 98.8125
-$ (&#39;91282CEU Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;91282CEU Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;91282CEV Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 98.8828125
 $ (&#39;91282CEW Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 99.669921875
-$ (&#39;91282CEX Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;91282CEX Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;91282CFF Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 93.265625
-$ (&#39;91282CFK Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;91282CFK Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;91282CFL Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 100.86328125
 $ (&#39;91282CFM Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 101.078125
-$ (&#39;91282CFN Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;91282CFN Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;91282CFT Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 101.32421875
 $ (&#39;91282CFV Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 101.1953125
 $ (&#39;91282CFZ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 100.720703125
-$ (&#39;91282CGA Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;91282CGA Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;91282CGB Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 100.859375
-$ (&#39;91282CGD Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;91282CGD Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;91282CGM Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 97.2265625
 $ (&#39;91282CGP Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 101.0546875
 $ (&#39;91282CGQ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 101.28515625
 $ (&#39;91282CGR Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 100.201171875
 $ (&#39;91282CGS Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 99.828125
 $ (&#39;91282CGT Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 100.28515625
-$ (&#39;91282CGU Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;91282CGU Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;91282CHE Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 100.2734375
 $ (&#39;91282CHF Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 100.265625
 $ (&#39;91282CHH Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 100.29296875
 $ (&#39;91282CHJ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 100.265625
 $ (&#39;91282CHK Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 101.17578125
-$ (&#39;91282CHL Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;91282CHL Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;91282CHR Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 101.2890625
 $ (&#39;91282CHW Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 101.77734375
 $ (&#39;91282CHX Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 102.125
 $ (&#39;91282CHY Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 100.75
 $ (&#39;91282CHZ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 103.9453125
-$ (&#39;91282CJB Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;91282CJB Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;91282CJG Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 105.078125
 $ (&#39;91282CJN Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 102.27734375
 $ (&#39;91282CJP Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 100.791015625
 $ (&#39;91282CJQ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 100.08203125
-$ (&#39;91282CJS Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;91282CJS Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ (&#39;91282CJX Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 101.19140625
 $ (&#39;91282CKC Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 102.328125
 $ (&#39;91282CKD Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 102.046875
@@ -858,7 +859,7 @@ $ (&#39;91282CNR Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 100.5
 $ (&#39;91282CNW Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 99.7890625
 $ (&#39;91282CNX Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 99.6640625
 $ (&#39;91282CPQ Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; 99.6015625
-$ (&#39;91282CPY Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; None
+$ (&#39;91282CPY Govt&#39;, &#39;px_last&#39;)                 &lt;f64&gt; null
 $ Date                                        &lt;date&gt; 2026-01-01
 
 
@@ -902,20 +903,19 @@ $ Date                                        &lt;date&gt; 2026-01-01
 <td><p>2026-02-27 00:00:00</p></td>
 </tr>
 <tr class="row-odd"><td><p>Dataframe Path</p></td>
-<td><p>/Users/maxzhalilo/Finm/Finm-329/p10_Siriwardane_et_al_2026/_data/bloomberg.parquet</p></td>
-</tr>
-<tr class="row-even"><td><p>Download Data as Parquet</p></td>
-<td><p><a class="reference download internal" download="" href="../../_downloads/a90b7c566170bb83c3fc406d073753c8/bloomberg.parquet"><span class="xref download myst">Parquet</span></a></p></td>
-</tr>
-<tr class="row-odd"><td><p>Download Data as Excel</p></td>
-<td><p><a class="reference internal" href="#../../download_dataframe/TR/bloomberg.xlsx"><span class="xref myst">Excel</span></a></p></td>
-</tr>
-<tr class="row-even"><td><p>Linked Charts</p></td>
-<td><p><a class="reference internal" href="../../charts/TR.treasury_futures_prices.html"><span class="std std-doc">TR:treasury_futures_prices</span></a><br>  <a class="reference internal" href="../../charts/TR.underlying_futures_prices.html"><span class="std std-doc">TR:underlying_futures_prices</span></a><br>  <a class="reference internal" href="../../charts/TR.ois_input_rates.html"><span class="std std-doc">TR:ois_input_rates</span></a><br>  <a class="reference internal" href="../../charts/TR.holding_period_days.html"><span class="std std-doc">TR:holding_period_days</span></a><br>  <a class="reference internal" href="../../charts/TR.implied_repo_vs_interpolated_ois.html"><span class="std std-doc">TR:implied_repo_vs_interpolated_ois</span></a><br></p></td>
+<td><p>/mnt/c/Users/George/Documents/GitHub/p10_Siriwardane_et_al_2026/_data/bloomberg.parquet</p></td>
 </tr>
 </tbody>
 </table>
 </div>
+<p><strong>Linked Charts:</strong></p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../charts/TR.treasury_futures_prices.html"><span class="std std-doc">TR:treasury_futures_prices</span></a></p></li>
+<li><p><a class="reference internal" href="../../charts/TR.underlying_futures_prices.html"><span class="std std-doc">TR:underlying_futures_prices</span></a></p></li>
+<li><p><a class="reference internal" href="../../charts/TR.ois_input_rates.html"><span class="std std-doc">TR:ois_input_rates</span></a></p></li>
+<li><p><a class="reference internal" href="../../charts/TR.holding_period_days.html"><span class="std std-doc">TR:holding_period_days</span></a></p></li>
+<li><p><a class="reference internal" href="../../charts/TR.implied_repo_vs_interpolated_ois.html"><span class="std std-doc">TR:implied_repo_vs_interpolated_ois</span></a></p></li>
+</ul>
 </section>
 <section id="pipeline-manifest">
 <h2>Pipeline Manifest<a class="headerlink" href="#pipeline-manifest" title="Link to this heading">#</a></h2>
@@ -939,10 +939,10 @@ $ Date                                        &lt;date&gt; 2026-01-01
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p>Pipeline Web Page</p></td>
-<td><p><a href="file:///Users/maxzhalilo/Finm/Finm-329/p10_Siriwardane_et_al_2026/docs/index.html">Pipeline Web Page</p></td>
+<td><p><a href="file:///mnt/c/Users/George/Documents/GitHub/p10_Siriwardane_et_al_2026/docs/index.html">Pipeline Web Page</p></td>
 </tr>
 <tr class="row-odd"><td><p>Date of Last Code Update</p></td>
-<td><p>2026-03-09 18:35:49</p></td>
+<td><p>2026-03-09 15:25:06</p></td>
 </tr>
 <tr class="row-even"><td><p>OS Compatibility</p></td>
 <td><p></p></td>

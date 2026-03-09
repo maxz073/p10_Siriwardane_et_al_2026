@@ -46,8 +46,8 @@ apidocs/index
 | Lead Pipeline Developer         | George Lord, Max Zhalilo             |
 | Contributors                    | George Lord, Max Zhalilo           |
 | Git Repo URL                    |                         |
-| Pipeline Web Page               | <a href="file:///Users/maxzhalilo/Finm/Finm-329/p10_Siriwardane_et_al_2026/docs/index.html">Pipeline Web Page      |
-| Date of Last Code Update        | 2026-03-09 18:35:49           |
+| Pipeline Web Page               | <a href="file:///mnt/c/Users/George/Documents/GitHub/p10_Siriwardane_et_al_2026/docs/index.html">Pipeline Web Page      |
+| Date of Last Code Update        | 2026-03-09 15:25:06           |
 | OS Compatibility                |  |
 | Linked Dataframes               |  [TR:bloomberg](./dataframes/TR/bloomberg.md)<br>  |
 
