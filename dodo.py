@@ -114,6 +114,12 @@ STAGED_INPUTS = [
     DATA_DIR / "TFZ_IRR.parquet",
 ]
 
+TIDY_INPUTS = [
+    DATA_DIR / "futures_inputs_tidy.parquet",
+    DATA_DIR / "ois_inputs_tidy.parquet",
+    DATA_DIR / "crsp_inputs_tidy.parquet",
+]
+
 SPREAD_OUTPUTS = [
     DATA_DIR / "implied_repo_first_deferred.parquet",
     DATA_DIR / "holding_period_days.parquet",
@@ -261,19 +267,43 @@ def task_pull_live_data():
     }
 
 
-def task_calc_spreads():
-    """Compute implied repo and arbitrage spread outputs."""
+def task_tidy_inputs():
+    """Create tidy input datasets used by analysis scripts."""
     return {
         "actions": [
-            "python ./src/calc_spread.py --MANUAL_DATA_DIR=./_data",
+            CmdAction(
+                f"{sys.executable} ./src/tidy_inputs.py --DATA_DIR=./_data",
+                shell=True,
+            ),
         ],
         "file_dep": [
+            "./src/tidy_inputs.py",
             "./src/calc_spread.py",
             "./src/settings.py",
             *STAGED_INPUTS,
         ],
-        "targets": SPREAD_OUTPUTS,
+        "targets": TIDY_INPUTS,
         "task_dep": ["stage_manual_data"],
+        "clean": True,
+    }
+
+
+def task_calc_spreads():
+    """Compute implied repo and arbitrage spread outputs."""
+    return {
+        "actions": [
+            CmdAction(
+                f"{sys.executable} ./src/calc_spread.py --MANUAL_DATA_DIR=./_data",
+                shell=True,
+            ),
+        ],
+        "file_dep": [
+            "./src/calc_spread.py",
+            "./src/settings.py",
+            *TIDY_INPUTS,
+        ],
+        "targets": SPREAD_OUTPUTS,
+        "task_dep": ["tidy_inputs"],
         "clean": True,
     }
 

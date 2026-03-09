@@ -424,7 +424,7 @@ document.write(`
                 <article class="bd-article">
                    <section class="tex2jax_ignore mathjax_ignore" id="treasury-spot-futures">
 <h1>Treasury Spot-Futures<a class="headerlink" href="#treasury-spot-futures" title="Link to this heading">#</a></h1>
-<p>Last updated: Mar 9, 2026, 4:53:02 AM</p>
+<p>Last updated: Mar 9, 2026, 5:17:56 AM</p>
 <section id="table-of-contents">
 <h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
@@ -476,7 +476,7 @@ document.write(`
 <td><p><a href="file:///mnt/c/Users/George/Documents/GitHub/p10_Siriwardane_et_al_2026/docs/index.html">Pipeline Web Page</p></td>
 </tr>
 <tr class="row-odd"><td><p>Date of Last Code Update</p></td>
-<td><p>2026-03-08 23:49:30</p></td>
+<td><p>2026-03-09 00:14:26</p></td>
 </tr>
 <tr class="row-even"><td><p>OS Compatibility</p></td>
 <td><p></p></td>
@@ -490,7 +490,7 @@ document.write(`
 </section>
 <section id="about-this-project">
 <h2>About this project<a class="headerlink" href="#about-this-project" title="Link to this heading">#</a></h2>
-<p>A data science project</p>
+<p>This project reproduces the Treasury spot-futures spread construction used in the appendix of \textit{Segmented Arbitrage} by Emil Siriwardane, Adi Sunderam, and Jonathan Wallen (2023) <a class="reference external" href="https://www.hbs.edu/ris/Publication%20Files/24-030_1506d32b-3190-4144-8c75-a2326b87f81e.pdf">link</a> In this repository, spreads are computed as implied repo minus interpolated OIS (in basis points) for five tenor labels using Bloomberg futures/OIS inputs and CRSP/WRDS bond inputs.</p>
 </section>
 <section id="quick-start">
 <h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading">#</a></h2>
@@ -508,10 +508,10 @@ and <a class="reference external" href="https://tug.org/mactex/mactex-download.h
 </pre></div>
 </div>
 <p>Also install the required TeX dependencies (Linux):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>texlive-full<span class="w"> </span><span class="c1"># on Windows: https://tex.stackexchange.com/questions/666988/is-there-any-faster-way-to-install-texlive-on-windows</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>texlive-full<span class="w"> </span>
 </pre></div>
 </div>
-<p>Before you can run the project tasks, you may need to refer to “Setting Environment Variables” to set your <code class="docutils literal notranslate"><span class="pre">WRDS_USERNAME</span></code> if you do not have the CRSP or bloomberg data in <code class="docutils literal notranslate"><span class="pre">data_manual/</span></code>.</p>
+<p>Note: Before you can run the project tasks, you may need to refer to “Setting Environment Variables” to set your <code class="docutils literal notranslate"><span class="pre">WRDS_USERNAME</span></code> if you do not have the CRSP or bloomberg data in <code class="docutils literal notranslate"><span class="pre">data_manual/</span></code>.</p>
 <p>Finally, run the project tasks:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>doit
 </pre></div>

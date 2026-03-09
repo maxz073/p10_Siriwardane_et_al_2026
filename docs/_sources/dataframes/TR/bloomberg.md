@@ -484,7 +484,7 @@ $ Date                                        <date> 2026-01-01
 | Contributors                    | George Lord, Max Zhalilo           |
 | Git Repo URL                    |                         |
 | Pipeline Web Page               | <a href="file:///mnt/c/Users/George/Documents/GitHub/p10_Siriwardane_et_al_2026/docs/index.html">Pipeline Web Page      |
-| Date of Last Code Update        | 2026-03-08 23:49:30           |
+| Date of Last Code Update        | 2026-03-09 00:14:26           |
 | OS Compatibility                |  |
 | Linked Dataframes               |  [TR:bloomberg](../dataframes/TR/bloomberg.md)<br>  |
 

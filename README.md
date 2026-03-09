@@ -3,7 +3,7 @@ Treasury Spot-Futures
 
 ## About this project
 
-A data science project
+This project reproduces the Treasury spot-futures spread construction used in the appendix of \textit{Segmented Arbitrage} by Emil Siriwardane, Adi Sunderam, and Jonathan Wallen (2023) [link](https://www.hbs.edu/ris/Publication%20Files/24-030_1506d32b-3190-4144-8c75-a2326b87f81e.pdf) In this repository, spreads are computed as implied repo minus interpolated OIS (in basis points) for five tenor labels using Bloomberg futures/OIS inputs and CRSP/WRDS bond inputs.
 
 ## Quick Start
 
@@ -26,10 +26,10 @@ pip install -r requirements.txt
 
 Also install the required TeX dependencies (Linux):
 ```bash
-sudo apt-get install -y texlive-full # on Windows: https://tex.stackexchange.com/questions/666988/is-there-any-faster-way-to-install-texlive-on-windows
+sudo apt-get install -y texlive-full 
 ```
 
-Before you can run the project tasks, you may need to refer to "Setting Environment Variables" to set your `WRDS_USERNAME` if you do not have the CRSP or bloomberg data in `data_manual/`.
+Note: Before you can run the project tasks, you may need to refer to "Setting Environment Variables" to set your `WRDS_USERNAME` if you do not have the CRSP or bloomberg data in `data_manual/`.
 
 Finally, run the project tasks:
 ```bash
