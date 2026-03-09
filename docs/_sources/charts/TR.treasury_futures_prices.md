@@ -1,5 +1,5 @@
 ---
-date: 2026-03-09 13:01:28
+date: 2026-03-09 18:35:49
 tags: Bloomberg Terminal
 category: Treasury Futures, Arbitrage, Fixed Income, Spreads
 ---
@@ -84,7 +84,7 @@ Time series of Treasury spot-futures arbitrage spreads for 2Y, 5Y, 10Y, 20Y, and
 | Contributors                    | George Lord, Max Zhalilo           |
 | Git Repo URL                    |                         |
 | Pipeline Web Page               | <a href="file:///Users/maxzhalilo/Finm/Finm-329/p10_Siriwardane_et_al_2026/docs/index.html">Pipeline Web Page      |
-| Date of Last Code Update        | 2026-03-09 13:01:28           |
+| Date of Last Code Update        | 2026-03-09 18:35:49           |
 | OS Compatibility                |  |
 | Linked Dataframes               |  [TR:bloomberg](../dataframes/TR/bloomberg.md)<br>  |
 

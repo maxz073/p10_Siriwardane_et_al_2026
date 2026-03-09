@@ -354,12 +354,15 @@ def _calc_implied_repo_per_tenor_from_tidy(
             }
         )
 
-    return (
+    out = (
         pd.DataFrame(out_rows)
         .drop_duplicates(subset=["Date"])
         .set_index("Date")
         .sort_index()
     )
+    if not out.empty:
+        out["implied_repo_pct"] = out["implied_repo_pct"].rolling(5, center=True).median()
+    return out
 
 
 def calc_implied_repo_per_tenor(
@@ -443,7 +446,10 @@ def calc_implied_repo_per_tenor(
             "fut_ctd_cusip": row["fut_ctd_cusip"],
         })
 
-    return pd.DataFrame(out_rows).drop_duplicates(subset=["Date"]).set_index("Date").sort_index()
+    out = pd.DataFrame(out_rows).drop_duplicates(subset=["Date"]).set_index("Date").sort_index()
+    if not out.empty:
+        out["implied_repo_pct"] = out["implied_repo_pct"].rolling(5, center=True).median()
+    return out
 
 
 def calc_irr(bloomberg_path: Path | None = None, irr_path: Path | None = None) -> tuple[pd.DataFrame, pd.DataFrame]:
