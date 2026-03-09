@@ -177,7 +177,7 @@ def _compute_ae_ic_d1_d2(merged: pd.DataFrame, delivery_col: str) -> pd.DataFram
     # Ex-coupon: coupon is included in price if caldt < ex_coupon_date <= delivery
     ex_coupon_date = next_cpn - pd.offsets.BDay(1)
     df["Ic"] = 0.0
-    mask_cpn = (df["caldt"] < ex_coupon_date) & (ex_coupon_date <= delivery)
+    mask_cpn = (df["caldt"] < ex_coupon_date) & (next_cpn <= delivery)
     df.loc[mask_cpn, "Ic"] = df.loc[mask_cpn, "coupon_cash_per_period"]
 
     # d1 = holding period from settlement to delivery (Act/360)
@@ -206,6 +206,30 @@ def load_bloomberg(manual_dir: Path) -> pd.DataFrame:
     df.index = pd.to_datetime(df.index).normalize()
     return df
 
+def _delivery_candidate_dates(first_dlv: pd.Timestamp, last_dlv: pd.Timestamp, next_coupon_date) -> list:
+    """
+    Candidate delivery dates for max-IRR: first delivery, ex-coupon (1 BDay before coupon),
+    coupon date, and last delivery. Only dates within [first_dlv, last_dlv] are returned.
+    """
+    first_dlv = pd.Timestamp(first_dlv).normalize()
+    last_dlv = pd.Timestamp(last_dlv).normalize()
+    candidates = [first_dlv, last_dlv]
+    next_cpn = pd.to_datetime(next_coupon_date)
+    if pd.notna(next_cpn):
+        next_cpn = pd.Timestamp(next_cpn).normalize()
+        ex_coupon = (next_cpn - pd.offsets.BDay(1)).normalize()
+        for d in (ex_coupon, next_cpn):
+            if first_dlv <= d <= last_dlv:
+                candidates.append(d)
+    # Unique, sorted for reproducibility
+    seen = set()
+    out = []
+    for d in candidates:
+        key = (d.year, d.month, d.day)
+        if key not in seen:
+            seen.add(key)
+            out.append(d)
+    return sorted(out)
 
 def calc_implied_repo_per_tenor(
     bbg_df: pd.DataFrame,
@@ -213,49 +237,81 @@ def calc_implied_repo_per_tenor(
     tenor: str,
     ticker: str,
 ) -> pd.DataFrame:
-    """IRR per date for one tenor; result = max(IRR first delivery, IRR last delivery)."""
     raw = _extract_contract_series(bbg_df, ticker)
     if raw.empty or "px_last" not in raw.columns:
-        return pd.DataFrame()
-    if "current_contract_month_yr" not in raw.columns:
         return pd.DataFrame()
 
     raw = _delivery_dates_from_contract_month(raw)
     raw = raw[raw["px_volume"] > 0].copy()
-    raw = raw.dropna(subset=["px_last", "fut_cnvs_factor", "fut_ctd_cusip", "current_contract_month_yr", "fut_dlv_dt_first", "fut_dlv_dt_last"])
+    raw = raw.dropna(
+        subset=[
+            "px_last", "fut_cnvs_factor", "fut_ctd_cusip",
+            "fut_dlv_dt_first", "fut_dlv_dt_last"
+        ]
+    )
     if raw.empty:
         return pd.DataFrame()
 
     raw = raw.reset_index()
     raw["Date"] = pd.to_datetime(raw["Date"]).dt.normalize()
+
     irr = irr_df.copy()
     irr["tcusip"] = irr["tcusip"].astype(str).str.strip().str.strip('"')
     raw["fut_ctd_cusip"] = raw["fut_ctd_cusip"].astype(str).str.strip().str.strip('"')
-    merged = raw.merge(irr, left_on=["Date", "fut_ctd_cusip"], right_on=["caldt", "tcusip"], how="inner")
+
+    merged = raw.merge(
+        irr,
+        left_on=["Date", "fut_ctd_cusip"],
+        right_on=["caldt", "tcusip"],
+        how="inner"
+    )
     if merged.empty:
         return pd.DataFrame()
 
-    P = merged["clean_price"]
-    F, CF = merged["px_last"], merged["fut_cnvs_factor"]
-    m_first = _compute_ae_ic_d1_d2(merged.copy(), "fut_dlv_dt_first")
-    m_last = _compute_ae_ic_d1_d2(merged.copy(), "fut_dlv_dt_last")
-    irr_first = _irr_series(merged, m_first, P, m_first["Ab"], F, CF)
-    irr_last = _irr_series(merged, m_last, P, m_last["Ab"], F, CF)
-    irr_both = pd.concat([irr_first, irr_last], axis=1)
-    irr_pct = irr_both.max(axis=1)
-    # Holding period (days) for the delivery that achieved max(IRR); d1 is in years (Act/360)
-    use_first = irr_first >= irr_last
-    d1_win = np.where(use_first, m_first["d1"].values, m_last["d1"].values)
-    holding_period_days = np.where(np.isnan(d1_win), np.nan, d1_win * 360.0)
+    out_rows = []
+    last_printed_year = None
 
-    result = merged[["Date"]].copy()
-    result["tenor"] = tenor
-    result["implied_repo_pct"] = irr_pct
-    result["holding_period_days"] = holding_period_days
-    result["px_last"] = merged["px_last"]
-    result["px_volume"] = merged["px_volume"]
-    result["fut_ctd_cusip"] = merged["fut_ctd_cusip"]
-    return result.drop_duplicates(subset=["Date"]).set_index("Date").sort_index()
+    for _, row in merged.iterrows():
+        row_year = pd.Timestamp(row["Date"]).year
+        if row_year != last_printed_year:
+            print(f"Computing IRR for {tenor}: {row_year}")
+            last_printed_year = row_year
+
+        first_dlv = pd.to_datetime(row["fut_dlv_dt_first"])
+        last_dlv = pd.to_datetime(row["fut_dlv_dt_last"])
+        candidates = _delivery_candidate_dates(first_dlv, last_dlv, row.get("next_coupon_date"))
+
+        best_irr = np.nan
+        best_dlv = pd.NaT
+
+        row_df = pd.DataFrame([row])
+        P = row_df["clean_price"]
+        F = row_df["px_last"]
+        CF = row_df["fut_cnvs_factor"]
+
+        for dlv in candidates:
+            temp = row_df.copy()
+            temp["candidate_delivery"] = dlv
+
+            m = _compute_ae_ic_d1_d2(temp, "candidate_delivery")
+            irr_val = _irr_series(temp, m, P, m["Ab"], F, CF).iloc[0]
+
+            if pd.notna(irr_val) and (pd.isna(best_irr) or irr_val > best_irr):
+                best_irr = irr_val
+                best_dlv = dlv
+
+        out_rows.append({
+            "Date": row["Date"],
+            "tenor": tenor,
+            "implied_repo_pct": best_irr,  # bps (pipeline expects this column name)
+            "optimal_delivery_date": best_dlv,
+            "holding_period_days": (best_dlv - (row["caldt"] + pd.offsets.BDay(1))).days if pd.notna(best_dlv) else np.nan,
+            "px_last": row["px_last"],
+            "px_volume": row["px_volume"],
+            "fut_ctd_cusip": row["fut_ctd_cusip"],
+        })
+
+    return pd.DataFrame(out_rows).drop_duplicates(subset=["Date"]).set_index("Date").sort_index()
 
 
 def calc_irr(bloomberg_path: Path | None = None, irr_path: Path | None = None) -> tuple[pd.DataFrame, pd.DataFrame]:
