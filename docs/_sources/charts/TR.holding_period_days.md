@@ -1,5 +1,5 @@
 ---
-date: 2026-03-09 13:01:28
+date: 2026-03-09 15:25:06
 tags: Bloomberg Terminal
 category: Treasury Futures, Arbitrage, Holding Period
 ---
@@ -65,10 +65,23 @@ Tenor-specific holding period in days implied by winning delivery choice in IRR 
 | How is data pulled?            | Bloomberg Terminal API via Python (xbbg package)                                                    |
 | Data available up to (min)     |                                                              |
 | Data available up to (max)     |                                                              |
-| Dataframe Path                 | /Users/maxzhalilo/Finm/Finm-329/p10_Siriwardane_et_al_2026/_data/bloomberg.parquet                                                   |
-| Download Data as Parquet       | [Parquet](../../download_dataframe/TR/bloomberg.parquet)         |
-| Download Data as Excel         | [Excel](../../download_dataframe/TR/bloomberg.xlsx)              |
-| Linked Charts                  |   [TR:treasury_futures_prices](../../charts/TR.treasury_futures_prices.md)<br>  [TR:underlying_futures_prices](../../charts/TR.underlying_futures_prices.md)<br>  [TR:ois_input_rates](../../charts/TR.ois_input_rates.md)<br>  [TR:holding_period_days](../../charts/TR.holding_period_days.md)<br>  [TR:implied_repo_vs_interpolated_ois](../../charts/TR.implied_repo_vs_interpolated_ois.md)<br>   |
+| Dataframe Path                 | /mnt/c/Users/George/Documents/GitHub/p10_Siriwardane_et_al_2026/_data/bloomberg.parquet                                                   |
+
+
+**Linked Charts:**
+
+
+- [TR:treasury_futures_prices](../../charts/TR.treasury_futures_prices.md)
+
+- [TR:underlying_futures_prices](../../charts/TR.underlying_futures_prices.md)
+
+- [TR:ois_input_rates](../../charts/TR.ois_input_rates.md)
+
+- [TR:holding_period_days](../../charts/TR.holding_period_days.md)
+
+- [TR:implied_repo_vs_interpolated_ois](../../charts/TR.implied_repo_vs_interpolated_ois.md)
+
+
 
 ## Pipeline Manifest
 
@@ -78,8 +91,8 @@ Tenor-specific holding period in days implied by winning delivery choice in IRR 
 | Lead Pipeline Developer         | George Lord, Max Zhalilo             |
 | Contributors                    | George Lord, Max Zhalilo           |
 | Git Repo URL                    |                         |
-| Pipeline Web Page               | <a href="file:///Users/maxzhalilo/Finm/Finm-329/p10_Siriwardane_et_al_2026/docs/index.html">Pipeline Web Page      |
-| Date of Last Code Update        | 2026-03-09 13:01:28           |
+| Pipeline Web Page               | <a href="file:///mnt/c/Users/George/Documents/GitHub/p10_Siriwardane_et_al_2026/docs/index.html">Pipeline Web Page      |
+| Date of Last Code Update        | 2026-03-09 15:25:06           |
 | OS Compatibility                |  |
 | Linked Dataframes               |  [TR:bloomberg](../dataframes/TR/bloomberg.md)<br>  |
 
