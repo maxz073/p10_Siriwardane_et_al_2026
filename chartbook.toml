@@ -23,10 +23,10 @@ README_file_path = "./README.md"
 [notebooks]
 
 
-[notebooks.01_example_notebook_interactive]
-notebook_name = "Example Notebook Interactive"
-notebook_description = "Example notebook for demonstrating how to construct a Chartbook notebook."
-notebook_path = "_output/01_example_notebook_interactive_ipynb.ipynb"
+[notebooks.treasury_spot_futures_tour]
+notebook_name = "Treasury Spot-Futures Project Tour"
+notebook_description = "Guided tour of cleaned inputs, spread calculations, and core arbitrage spread output."
+notebook_path = "_output/treasury_spot_futures_tour_ipynb.ipynb"
 
 
 

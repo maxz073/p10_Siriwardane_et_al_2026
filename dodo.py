@@ -114,8 +114,8 @@ def run_latexmk(tex_file, clean=False):
 
 
 notebook_tasks = {
-    "01_example_notebook_interactive_ipynb": {
-        "path": "./src/01_example_notebook_interactive_ipynb.py",
+    "treasury_spot_futures_tour_ipynb": {
+        "path": "./src/treasury_spot_futures_tour_ipynb.py",
         "file_dep": [],
         "targets": [],
     },
