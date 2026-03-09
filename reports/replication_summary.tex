@@ -1,7 +1,4 @@
 % Single deliverable report for the Treasury spot-futures replication.
-% How to edit:
-% 1) Replace each \writehere{...} with your own prose.
-% 2) You can write multiple paragraphs by deleting \writehere and typing normal LaTeX text.
 
 \newcommand*{\PathToOutput}{../_output}
 
@@ -15,8 +12,8 @@
 
 \newcommand{\writehere}[1]{\textit{[WRITE HERE: #1]}}
 
-\title{Replication Summary: Treasury Spot-Futures Arbitrage Spreads}
-\author{Insert Author(s)}
+\title{Replication Summary: Segmented Arbitrage Treasury Spot-Futures}
+\author{By George Lord and Max Zhalilo}
 \date{\today}
 
 \begin{document}
@@ -24,28 +21,67 @@
 \onehalfspacing
 
 \section{Project Overview}
-\writehere{Briefly describe what you replicated, why it matters, and whether the broad pattern in the target figure was replicated.}
+This project reproduces the Treasury spot-futures spread construction used in the appendix of \textit{Segmented Arbitrage}
+by Emil Siriwardane, Adi Sunderam, and Jonathan Wallen (2023) \href{https://www.hbs.edu/ris/Publication%20Files/24-030_1506d32b-3190-4144-8c75-a2326b87f81e.pdf}{(link)}.
+In this repository, spreads are computed as implied repo minus interpolated OIS (in basis points) for five tenor labels
+(\texttt{2Y}, \texttt{5Y}, \texttt{10Y}, \texttt{20Y}, \texttt{30Y}) using Bloomberg futures/OIS inputs and CRSP/WRDS bond inputs.
+
+The implementation in \texttt{src/calc\_spread.py} computes implied repo directly from futures and CTD-bond fields, evaluates both first- and last-delivery windows inferred from contract month, and retains the maximum implied repo for each date-tenor pair before subtracting interpolated OIS. In the current staged outputs, the arbitrage spread series runs from \texttt{2010-01-04} through \texttt{2026-01-30}.
+
+All core deliverables are scripted through \texttt{doit}: staged inputs, spread outputs, static and interactive charts, supporting tables/figures, and this report.
 
 \section{Data Sources}
-\writehere{Describe how data was sourced, any date ranges, and any constraints you faced.}
+\noindent The replication is built from two staged raw inputs: \texttt{bloomberg.parquet} and
+\texttt{TFZ\_IRR.parquet}. In the automated pipeline (\texttt{dodo.py}), these files are copied from
+\texttt{data\_manual/} into \texttt{\_data/} and then used by \texttt{src/calc\_spread.py}. The live pull scripts
+(\texttt{src/pull\_bloomberg.py} and \texttt{src/pull\_CRSP.py}) are configured for
+\texttt{2010-01-01} to \texttt{2026-02-28}; the staged data and outputs used in this writeup include observations
+through early 2026 (with spread outputs through \texttt{2026-01-30}).
+
 \begin{itemize}
-\item Bloomberg data: futures contract inputs and OIS rates used in spread construction.
-\item CRSP/WRDS bond data: CTD bond-side inputs used in implied repo calculations.
+\item \textbf{Bloomberg futures and OIS inputs (via \texttt{xbbg}):}
+for second-deferred Treasury futures (\texttt{TU2}, \texttt{FV2}, \texttt{TY2}, \texttt{WN2}, \texttt{US2}),
+the code pulls \texttt{PX\_LAST}, \texttt{PX\_VOLUME}, \texttt{FUT\_CTD\_CUSIP},
+\texttt{FUT\_CNVS\_FACTOR}, and \texttt{CURRENT\_CONTRACT\_MONTH\_YR}. It also pulls OIS
+\texttt{PX\_LAST} for 2M/3M/4M/5M/6M/9M tenors (\texttt{USSOB}, \texttt{USSOC}, \texttt{USSOD},
+\texttt{USSOE}, \texttt{USSOF}, \texttt{USSOI}).
+
+\item \textbf{How Bloomberg fields are used:}
+\texttt{PX\_LAST} and \texttt{FUT\_CNVS\_FACTOR} form the futures leg in implied repo;
+\texttt{FUT\_CTD\_CUSIP} is the key used to merge to CRSP bond records by date and CUSIP;
+\texttt{CURRENT\_CONTRACT\_MONTH\_YR} is parsed to infer first and last delivery business days
+(used to evaluate both delivery choices). OIS points are linearly interpolated to the tenor-specific
+holding period and converted to bps for the financing benchmark in the spread.
+
+\item \textbf{CRSP/WRDS bond inputs:}
+\texttt{src/pull\_CRSP.py} queries \texttt{crspm.tfz\_dly} joined to \texttt{crspm.tfz\_iss}
+for Treasury note/bond issues (\texttt{itype} in 1,2), retrieving bid/ask, accrued interest,
+coupon rate, issue/maturity dates, and CUSIP. The script constructs
+\texttt{clean\_price} (mid bid/ask), keeps beginning accrued interest, and carries coupon metadata.
+
+\item \textbf{How CRSP fields are used:}
+clean price and coupon schedule inputs produce the bond-side terms in the implied repo formula
+(\(A_e\), \(A_b\), \(I_c\), \(d_1\), \(d_2\)). For each tenor-date, the code computes implied repo for
+first and last delivery windows and keeps the maximum, then computes
+Spread \(=\) Implied Repo \(-\) Interpolated OIS (in bps).
+
+\item \textbf{Key constraints and assumptions in this repo:}
+Bloomberg historical delivery-date fields are not relied on; delivery bounds are inferred from contract month.
+CRSP does not provide an explicit coupon schedule in the pulled tables, so the code assumes semiannual coupons
+(\texttt{coupon\_frequency}=2) and \texttt{ACT/ACT} basis and derives previous/next coupon dates from maturity.
 \end{itemize}
 
 \section{Replication Deliverable: Arbitrage Spread Plot}
-\writehere{Summarize what the deliverable figure shows and the key economic takeaway.}
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\linewidth]{\PathToOutput/arbitrage_spreads_by_tenor.png}
-\caption{Replicated treasury spot-futures arbitrage spreads by tenor over time.}
+\caption{Replicated Treasury spot-futures arbitrage spreads by tenor over time, measured as implied repo minus interpolated OIS (in basis points). In the current staged outputs, this series runs through \texttt{2026-01-30}.}
 \label{fig:replication_deliverable_spread}
 \end{figure}
 
 \clearpage
-\section{Supporting Tables (Inputs and Components)}
-\writehere{Explain what these tables tell the reader about the exact data pieces used to compute the spreads.}
+\section{Supporting Tables}
 
 \input{\PathToOutput/underlying_summary_stats_table.tex}
 \input{\PathToOutput/futures_input_coverage_table.tex}
@@ -55,23 +91,26 @@
 \input{\PathToOutput/spread_component_summary_table.tex}
 
 \clearpage
-\section{Supporting Figures (Inputs and Components)}
-\writehere{Explain how these figures validate and contextualize the spread construction inputs.}
+\section{Supporting Figures}
 
 \input{\PathToOutput/underlying_futures_prices_figure.tex}
 \input{\PathToOutput/ois_input_rates_figure.tex}
 \input{\PathToOutput/holding_period_days_by_tenor_figure.tex}
 \input{\PathToOutput/implied_repo_vs_interpolated_ois_by_tenor_figure.tex}
 
+\clearpage
 \section{Replication Assessment}
 \subsection{Where the replication succeeded}
-\writehere{State where you matched the original paper most closely.}
+The replication succeeded in producing a complete, automated spread pipeline from staged Bloomberg and CRSP inputs through implied repo, interpolated OIS, and final tenor-level spreads. In the current outputs, all five tenor series are populated and the arbitrage spread panel spans \texttt{2010-01-04} to \texttt{2026-01-30}, with supporting tables and figures generated from the same inputs.
 
 \subsection{Challenges and limitations}
-\writehere{Discuss the hardest parts: data availability, cleaning, mapping contracts, interpolation choices, and any unresolved gaps.}
+The hardest parts were data and mapping frictions: Bloomberg/WRDS access constraints, aligning daily futures records to CTD bond CUSIPs, and handling incomplete historical delivery-date fields. On the bond side, CRSP does not directly provide all coupon schedule fields needed for carry calculations, so we use transparent assumptions (semiannual coupons and ACT/ACT conventions) that may still leave small differences versus the original implementation.
 
 \subsection{Interactive chart outputs}
-\writehere{Optional: mention how readers can inspect the interactive HTML versions in the output folder.}
+
+When the site is built/deployed, interactive versions of the charts in this document are available in the chartbook at:
+\href{https://maxz073.github.io/p10_Siriwardane_et_al_2026/charts.html}{https://maxz073.github.io/p10\_Siriwardane\_et\_al\_2026/charts.html}
+
 \begin{itemize}
 \item \texttt{../\_output/arbitrage\_spreads\_by\_tenor.html}
 \item \texttt{../\_output/underlying\_futures\_prices\_by\_tenor.html}

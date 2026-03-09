@@ -108,7 +108,12 @@ def run_latexmk(tex_file, clean=False):
         if clean:
             cmd.append("-c")
         cmd.extend(["-cd", tex_file])
-        subprocess.run(cmd, check=True)
+        subprocess.run(
+            cmd,
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
 
     return _run_latexmk
 
@@ -346,6 +351,12 @@ def task_build_chartbook_site():
     notebook_scripts = [
         Path(notebook_tasks[notebook]["path"]) for notebook in notebook_tasks.keys()
     ]
+    notebook_outputs = [
+        OUTPUT_DIR / f"{notebook}.ipynb" for notebook in notebook_tasks.keys()
+    ] + [
+        OUTPUT_DIR / f"{notebook}.html" for notebook in notebook_tasks.keys()
+    ]
+    docs_markdown = glob.glob("./docs_src/**/*.md", recursive=True)
     return {
         "actions": ["chartbook build -f"],
         "targets": ["./docs/index.html"],
@@ -354,9 +365,15 @@ def task_build_chartbook_site():
             "./chartbook.toml",
             DATA_DIR / "bloomberg.parquet",
             OUTPUT_DIR / "arbitrage_spreads_by_tenor.html",
+            OUTPUT_DIR / "underlying_futures_prices_by_tenor.html",
+            OUTPUT_DIR / "ois_input_rates.html",
+            OUTPUT_DIR / "holding_period_days_by_tenor.html",
+            OUTPUT_DIR / "implied_repo_vs_interpolated_ois_by_tenor.html",
+            *docs_markdown,
             *notebook_scripts,
+            *notebook_outputs,
         ],
-        "task_dep": ["run_notebooks", "plot_spreads"],
+        "task_dep": ["run_notebooks", "plot_spreads", "underlying_data_exhibits"],
         "clean": True,
     }
 

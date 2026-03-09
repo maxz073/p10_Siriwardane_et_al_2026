@@ -1,51 +1,46 @@
 ---
 date: 2026-03-08 23:14:44
 tags: Bloomberg Terminal
-category: Treasury Futures, Arbitrage, Fixed Income, Spreads
+category: Treasury Futures, Arbitrage, Ois, Implied Repo
 ---
 
-# Chart: Arbitrage Spreads by Tenor
-Time series of Treasury spot-futures arbitrage spreads for 2Y, 5Y, 10Y, 20Y, and 30Y tenors.
+# Chart: Implied Repo vs Interpolated OIS by Tenor
+Comparison of implied repo rates and interpolated OIS financing benchmark across tenors.
 
 ## Chart
 ```{raw} html
-<iframe src="../_static/TR/treasury_futures_prices.html" height="500px" width="100%"></iframe>
+<iframe src="../_static/TR/implied_repo_vs_interpolated_ois.html" height="500px" width="100%"></iframe>
 
 <p style="text-align: center;">Sources: Bloomberg Terminal</p>
 ```
-[Full Screen Chart](../download_chart/TR/treasury_futures_prices.html)
+[Full Screen Chart](../download_chart/TR/implied_repo_vs_interpolated_ois.html)
 
 
 
 
 
+**Description:** This chart compares implied repo and interpolated OIS financing benchmarks by tenor over time.
 
-**Description:** This chart shows the replicated Treasury spot-futures arbitrage spread in basis points for the 2Y, 5Y, 10Y, 20Y, and 30Y tenors. The spread is defined as implied repo minus interpolated OIS at the tenor-specific holding period.
+**Relevance for Financial Markets:** It displays the two legs that define the arbitrage spread and helps identify whether spread moves are driven by futures/bond implied repo changes or by financing-rate moves.
 
-**Relevance for Financial Markets:** The spread measures relative-value dislocations between Treasury cash and futures markets. It is useful for:
-- Tracking arbitrage pressure across maturities
-- Comparing mispricing intensity across tenors
-- Studying market segmentation and funding stress
-- Monitoring how financing conditions map into futures basis
+**Direction of Risk:** A widening gap between implied repo and interpolated OIS indicates richer basis opportunities; narrowing gaps indicate reduced dislocation.
 
-**Direction of Risk:** A higher spread means implied repo is richer than the matched OIS financing benchmark; a lower or negative spread indicates less attractive (or reversed) basis opportunities.
+**Formulas Used:** Interpolated OIS is matched to tenor-specific holding period and compared directly with implied repo in bps.
 
-**Formulas Used:** Spread \(=\) Implied Repo \(-\) Interpolated OIS (both in bps).
-
-**Data Cleaning Information:** Input rows require positive futures volume and non-missing futures/CTD fields. Delivery windows are inferred from contract month, implied repo is computed for first and last delivery, and the maximum is retained before subtracting interpolated OIS.
+**Data Cleaning Information:** Both series are aligned to common dates and computed from staged Bloomberg/CRSP-derived outputs.
 
 **Relation to a chart in an OFR public monitor:** N/A
 
-**What does this add that other charts might not?** It is the final replication deliverable and directly summarizes the arbitrage signal across the full tenor curve in one panel.
+**What does this add that other charts might not?** It provides decomposition-level transparency for the spread rather than only the net result.
 
 
 
 ## Chart Specs
 
-| Chart Name             | Arbitrage Spreads by Tenor                                             |
+| Chart Name             | Implied Repo vs Interpolated OIS by Tenor                                             |
 |------------------------|------------------------------------------------------------|
-| Chart ID               | treasury_futures_prices                                               |
-| Topic Tags             | Treasury Futures, Arbitrage, Fixed Income, Spreads                                |
+| Chart ID               | implied_repo_vs_interpolated_ois                                               |
+| Topic Tags             | Treasury Futures, Arbitrage, Ois, Implied Repo                                |
 | Data Series Start Date | 2010-01-01                                 |
 | Data Frequency         | Daily                                         |
 | Observation Period     | Weekday                                     |
@@ -53,8 +48,8 @@ Time series of Treasury spot-futures arbitrage spreads for 2Y, 5Y, 10Y, 20Y, and
 | Data Release Timing    |                                     |
 | Seasonal Adjustment    | None                                    |
 | Units                  | Basis Points                                                  |
-| Data Series            | 2, Y, ,,  , 5, Y, ,,  , 1, 0, Y, ,,  , 2, 0, Y, ,,  , 3, 0, Y,  , a, r, b, i, t, r, a, g, e,  , s, p, r, e, a, d, s                                            |
-| HTML Chart             | [HTML](../download_chart/TR/treasury_futures_prices.html)    |
+| Data Series            | I, m, p, l, i, e, d,  , r, e, p, o,  , a, n, d,  , i, n, t, e, r, p, o, l, a, t, e, d,  , O, I, S,  , b, y,  , t, e, n, o, r                                            |
+| HTML Chart             | [HTML](../download_chart/TR/implied_repo_vs_interpolated_ois.html)    |
 
 
 ## Dataframe Manifest

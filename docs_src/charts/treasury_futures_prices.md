@@ -1,22 +1,18 @@
 
-**Description:** This chart visualizes the price movements of Treasury futures contracts across different maturities over time. It includes both first generic (most actively traded near-month) and second generic contracts for 2-year, 5-year, 10-year, 30-year Treasury notes/bonds, and Ultra 10-year notes. The interactive chart allows users to compare price trends across different maturities and contract series.
+**Description:** This chart shows the replicated Treasury spot-futures arbitrage spread in basis points for the 2Y, 5Y, 10Y, 20Y, and 30Y tenors. The spread is defined as implied repo minus interpolated OIS at the tenor-specific holding period.
 
-**Relevance for Financial Markets:** Treasury futures prices reflect market expectations about future interest rates and economic conditions. Price movements in these contracts are crucial for:
-- Hedging interest rate risk
-- Speculating on interest rate movements
-- Understanding yield curve dynamics
-- Assessing market sentiment about future Fed policy
+**Relevance for Financial Markets:** The spread measures relative-value dislocations between Treasury cash and futures markets. It is useful for:
+- Tracking arbitrage pressure across maturities
+- Comparing mispricing intensity across tenors
+- Studying market segmentation and funding stress
+- Monitoring how financing conditions map into futures basis
 
-**Direction of Risk:** Rising futures prices indicate falling expected yields (positive market sentiment), while falling prices indicate rising expected yields (negative sentiment or expectations of Fed tightening).
+**Direction of Risk:** A higher spread means implied repo is richer than the matched OIS financing benchmark; a lower or negative spread indicates less attractive (or reversed) basis opportunities.
 
-**Formulas Used:** N/A - Direct price data from Bloomberg Terminal.
+**Formulas Used:** Spread \(=\) Implied Repo \(-\) Interpolated OIS (both in bps).
 
-**Data Cleaning Information:** The chart uses the `PX_Last` field from Bloomberg, which represents the last traded price for each futures contract. Data is filtered to remove NaN values before plotting.
+**Data Cleaning Information:** Input rows require positive futures volume and non-missing futures/CTD fields. Delivery windows are inferred from contract month, implied repo is computed for first and last delivery, and the maximum is retained before subtracting interpolated OIS.
 
 **Relation to a chart in an OFR public monitor:** N/A
 
-**What does this add that other charts might not?** This chart provides a comprehensive view across multiple maturities and contract series simultaneously, allowing for:
-1. Cross-maturity comparisons to understand yield curve shifts
-2. Roll dynamics by comparing first vs second generic contracts
-3. Identification of relative value opportunities across the curve
-4. Assessment of market liquidity and trading patterns
+**What does this add that other charts might not?** It is the final replication deliverable and directly summarizes the arbitrage signal across the full tenor curve in one panel.

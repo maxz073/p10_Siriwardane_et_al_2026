@@ -1,60 +1,55 @@
 ---
 date: 2026-03-08 23:14:44
 tags: Bloomberg Terminal
-category: Treasury Futures, Arbitrage, Fixed Income, Spreads
+category: Treasury Futures, Fixed Income, Prices
 ---
 
-# Chart: Arbitrage Spreads by Tenor
-Time series of Treasury spot-futures arbitrage spreads for 2Y, 5Y, 10Y, 20Y, and 30Y tenors.
+# Chart: Underlying Treasury Futures Prices by Tenor
+Second-deferred Treasury futures prices for 2Y, 5Y, 10Y, 20Y, and 30Y contracts.
 
 ## Chart
 ```{raw} html
-<iframe src="../_static/TR/treasury_futures_prices.html" height="500px" width="100%"></iframe>
+<iframe src="../_static/TR/underlying_futures_prices.html" height="500px" width="100%"></iframe>
 
 <p style="text-align: center;">Sources: Bloomberg Terminal</p>
 ```
-[Full Screen Chart](../download_chart/TR/treasury_futures_prices.html)
+[Full Screen Chart](../download_chart/TR/underlying_futures_prices.html)
 
 
 
 
 
+**Description:** This chart shows the underlying second-deferred Treasury futures prices used in implied repo construction for 2Y, 5Y, 10Y, 20Y, and 30Y tenors.
 
-**Description:** This chart shows the replicated Treasury spot-futures arbitrage spread in basis points for the 2Y, 5Y, 10Y, 20Y, and 30Y tenors. The spread is defined as implied repo minus interpolated OIS at the tenor-specific holding period.
+**Relevance for Financial Markets:** These series are the direct futures-leg inputs to the arbitrage spread calculation and provide context for cross-tenor market behavior.
 
-**Relevance for Financial Markets:** The spread measures relative-value dislocations between Treasury cash and futures markets. It is useful for:
-- Tracking arbitrage pressure across maturities
-- Comparing mispricing intensity across tenors
-- Studying market segmentation and funding stress
-- Monitoring how financing conditions map into futures basis
+**Direction of Risk:** This is an input-level chart; it is mainly descriptive and does not by itself indicate arbitrage sign.
 
-**Direction of Risk:** A higher spread means implied repo is richer than the matched OIS financing benchmark; a lower or negative spread indicates less attractive (or reversed) basis opportunities.
+**Formulas Used:** N/A. Direct Bloomberg futures prices (`PX_LAST`) by tenor.
 
-**Formulas Used:** Spread \(=\) Implied Repo \(-\) Interpolated OIS (both in bps).
-
-**Data Cleaning Information:** Input rows require positive futures volume and non-missing futures/CTD fields. Delivery windows are inferred from contract month, implied repo is computed for first and last delivery, and the maximum is retained before subtracting interpolated OIS.
+**Data Cleaning Information:** Series are extracted from the Bloomberg parquet and plotted on a common date index.
 
 **Relation to a chart in an OFR public monitor:** N/A
 
-**What does this add that other charts might not?** It is the final replication deliverable and directly summarizes the arbitrage signal across the full tenor curve in one panel.
+**What does this add that other charts might not?** It shows the exact futures price inputs underlying the spread and helps verify data coverage and continuity by tenor.
 
 
 
 ## Chart Specs
 
-| Chart Name             | Arbitrage Spreads by Tenor                                             |
+| Chart Name             | Underlying Treasury Futures Prices by Tenor                                             |
 |------------------------|------------------------------------------------------------|
-| Chart ID               | treasury_futures_prices                                               |
-| Topic Tags             | Treasury Futures, Arbitrage, Fixed Income, Spreads                                |
+| Chart ID               | underlying_futures_prices                                               |
+| Topic Tags             | Treasury Futures, Fixed Income, Prices                                |
 | Data Series Start Date | 2010-01-01                                 |
 | Data Frequency         | Daily                                         |
 | Observation Period     | Weekday                                     |
 | Lag in Data Release    | One day                                    |
 | Data Release Timing    |                                     |
 | Seasonal Adjustment    | None                                    |
-| Units                  | Basis Points                                                  |
-| Data Series            | 2, Y, ,,  , 5, Y, ,,  , 1, 0, Y, ,,  , 2, 0, Y, ,,  , 3, 0, Y,  , a, r, b, i, t, r, a, g, e,  , s, p, r, e, a, d, s                                            |
-| HTML Chart             | [HTML](../download_chart/TR/treasury_futures_prices.html)    |
+| Units                  | Price                                                  |
+| Data Series            | 2, Y, ,,  , 5, Y, ,,  , 1, 0, Y, ,,  , 2, 0, Y, ,,  , 3, 0, Y,  , f, u, t, u, r, e, s,  , p, r, i, c, e, s                                            |
+| HTML Chart             | [HTML](../download_chart/TR/underlying_futures_prices.html)    |
 
 
 ## Dataframe Manifest

@@ -2,3 +2,7 @@ Name,Metadata Complete,Object Type,Identifier,Pipeline,Missing Fields,Page Link
 Treasury Spot-Futures,False,pipeline,TR,TR,"build_commands, os_compatibility, git_repo_URL",../index.html
 Bloomberg Treasury Futures and OIS Data,True,dataframe,bloomberg,TR,,../dataframes/TR/bloomberg.html
 Arbitrage Spreads by Tenor,False,chart,treasury_futures_prices,TR,data_release_timing,../charts/TR.treasury_futures_prices.html
+Underlying Treasury Futures Prices by Tenor,False,chart,underlying_futures_prices,TR,data_release_timing,../charts/TR.underlying_futures_prices.html
+OIS Input Rates,False,chart,ois_input_rates,TR,data_release_timing,../charts/TR.ois_input_rates.html
+Holding Period Days by Tenor,False,chart,holding_period_days,TR,data_release_timing,../charts/TR.holding_period_days.html
+Implied Repo vs Interpolated OIS by Tenor,False,chart,implied_repo_vs_interpolated_ois,TR,data_release_timing,../charts/TR.implied_repo_vs_interpolated_ois.html

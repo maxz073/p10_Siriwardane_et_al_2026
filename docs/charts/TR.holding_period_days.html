@@ -6,8 +6,9 @@
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>All Posts &#8212; Treasury Spot-Futures</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Chart: Holding Period Days by Tenor &#8212; Treasury Spot-Futures</title>
   
   
   
@@ -47,20 +48,13 @@
     <script src="../_static/copybutton.js?v=f281be69"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'charts/index';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'charts/TR.holding_period_days';</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="docsearch:language" content="en"/> 
-<link
-  rel="alternate"
-  type="application/atom+xml"
-  href="index/atom.xml"
-  title=""
-/>
-  
+  <meta name="docsearch:language" content="en"/>   
   </head>
   
   
@@ -292,6 +286,54 @@
 
 
 
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/charts/TR.holding_period_days.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
 <button onclick="toggleFullScreen()"
   class="btn btn-sm btn-fullscreen-button"
   title="Fullscreen mode"
@@ -325,7 +367,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -336,11 +380,22 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1></h1>
+    <h1>Chart: Holding Period Days by Tenor</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#chart">Chart</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#chart-specs">Chart Specs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataframe-manifest">Dataframe Manifest</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pipeline-manifest">Pipeline Manifest</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -349,274 +404,184 @@ document.write(`
                 
 <div id="searchbox"></div>
                 <article class="bd-article">
-                   
-<div class="section ablog__collection">
-  <h1>
+                   <section class="tex2jax_ignore mathjax_ignore" id="chart-holding-period-days-by-tenor">
+<h1>Chart: Holding Period Days by Tenor<a class="headerlink" href="#chart-holding-period-days-by-tenor" title="Link to this heading">#</a></h1>
+<p>Tenor-specific holding period in days implied by winning delivery choice in IRR construction.</p>
+<section id="chart">
+<h2>Chart<a class="headerlink" href="#chart" title="Link to this heading">#</a></h2>
+<iframe src="../_static/TR/holding_period_days.html" height="500px" width="100%"></iframe>
+
+<p style="text-align: center;">Sources: Bloomberg Terminal</p><p><a class="reference download internal" download="" href="../_downloads/c9a625ce807af351c3d026bc72755330/holding_period_days.html"><span class="xref download myst">Full Screen Chart</span></a></p>
+<p><strong>Description:</strong> This chart shows holding period days by tenor, where holding period is determined by the delivery date (first vs last delivery window) that maximizes implied repo.</p>
+<p><strong>Relevance for Financial Markets:</strong> Holding period length determines which point of the OIS curve is relevant for financing and therefore directly affects spread measurement.</p>
+<p><strong>Direction of Risk:</strong> Longer holding periods typically map to longer-tenor OIS inputs; spread sensitivity can shift as holding periods change through time.</p>
+<p><strong>Formulas Used:</strong> Holding period days are computed from settlement (T+1 business day) to the selected delivery date.</p>
+<p><strong>Data Cleaning Information:</strong> Tenor-level series come from the implied repo computation step and are plotted after date alignment.</p>
+<p><strong>Relation to a chart in an OFR public monitor:</strong> N/A</p>
+<p><strong>What does this add that other charts might not?</strong> It explains a key mechanical channel behind spread movements that is not visible in price-only charts.</p>
+</section>
+<section id="chart-specs">
+<h2>Chart Specs<a class="headerlink" href="#chart-specs" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Chart Name</p></th>
+<th class="head"><p>Holding Period Days by Tenor</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Chart ID</p></td>
+<td><p>holding_period_days</p></td>
+</tr>
+<tr class="row-odd"><td><p>Topic Tags</p></td>
+<td><p>Treasury Futures, Arbitrage, Holding Period</p></td>
+</tr>
+<tr class="row-even"><td><p>Data Series Start Date</p></td>
+<td><p>2010-01-01</p></td>
+</tr>
+<tr class="row-odd"><td><p>Data Frequency</p></td>
+<td><p>Daily</p></td>
+</tr>
+<tr class="row-even"><td><p>Observation Period</p></td>
+<td><p>Weekday</p></td>
+</tr>
+<tr class="row-odd"><td><p>Lag in Data Release</p></td>
+<td><p>One day</p></td>
+</tr>
+<tr class="row-even"><td><p>Data Release Timing</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>Seasonal Adjustment</p></td>
+<td><p>None</p></td>
+</tr>
+<tr class="row-even"><td><p>Units</p></td>
+<td><p>Days</p></td>
+</tr>
+<tr class="row-odd"><td><p>Data Series</p></td>
+<td><p>2, Y, ,  , 5, Y, ,  , 1, 0, Y, ,  , 2, 0, Y, ,  , 3, 0, Y,  , h, o, l, d, i, n, g,  , p, e, r, i, o, d,  , d, a, y, s</p></td>
+</tr>
+<tr class="row-even"><td><p>HTML Chart</p></td>
+<td><p><a class="reference download internal" download="" href="../_downloads/c9a625ce807af351c3d026bc72755330/holding_period_days.html"><span class="xref download myst">HTML</span></a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="dataframe-manifest">
+<h2>Dataframe Manifest<a class="headerlink" href="#dataframe-manifest" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Dataframe Name</p></th>
+<th class="head"><p>Bloomberg Treasury Futures and OIS Data</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Dataframe ID</p></td>
+<td><p><a class="reference internal" href="../dataframes/TR/bloomberg.html"><span class="std std-doc">bloomberg</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Data Sources</p></td>
+<td><p>Bloomberg Terminal</p></td>
+</tr>
+<tr class="row-even"><td><p>Data Providers</p></td>
+<td><p>Bloomberg L.P.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Links to Providers</p></td>
+<td><p><a class="reference external" href="https://www.bloomberg.com/professional/solution/bloomberg-terminal/">https://www.bloomberg.com/professional/solution/bloomberg-terminal/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Topic Tags</p></td>
+<td><p>Treasury Futures, Interest Rate Swaps, Ois, Fixed Income</p></td>
+</tr>
+<tr class="row-odd"><td><p>Type of Data Access</p></td>
+<td><p>P,r,o,p,r,i,e,t,a,r,y</p></td>
+</tr>
+<tr class="row-even"><td><p>How is data pulled?</p></td>
+<td><p>Bloomberg Terminal API via Python (xbbg package)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Data available up to (min)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>Data available up to (max)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>Dataframe Path</p></td>
+<td><p>/mnt/c/Users/George/Documents/GitHub/p10_Siriwardane_et_al_2026/_data/bloomberg.parquet</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Linked Charts:</strong></p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#../../charts/TR.treasury_futures_prices.md"><span class="xref myst">TR:treasury_futures_prices</span></a></p></li>
+<li><p><a class="reference internal" href="#../../charts/TR.underlying_futures_prices.md"><span class="xref myst">TR:underlying_futures_prices</span></a></p></li>
+<li><p><a class="reference internal" href="#../../charts/TR.ois_input_rates.md"><span class="xref myst">TR:ois_input_rates</span></a></p></li>
+<li><p><a class="reference internal" href="#../../charts/TR.holding_period_days.md"><span class="xref myst">TR:holding_period_days</span></a></p></li>
+<li><p><a class="reference internal" href="#../../charts/TR.implied_repo_vs_interpolated_ois.md"><span class="xref myst">TR:implied_repo_vs_interpolated_ois</span></a></p></li>
+</ul>
+</section>
+<section id="pipeline-manifest">
+<h2>Pipeline Manifest<a class="headerlink" href="#pipeline-manifest" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Pipeline Name</p></th>
+<th class="head"><p>Treasury Spot-Futures</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Pipeline ID</p></td>
+<td><p><a class="reference internal" href="../index.html"><span class="std std-doc">TR</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Lead Pipeline Developer</p></td>
+<td><p>George Lord, Max Zhalilo</p></td>
+</tr>
+<tr class="row-even"><td><p>Contributors</p></td>
+<td><p>George Lord, Max Zhalilo</p></td>
+</tr>
+<tr class="row-odd"><td><p>Git Repo URL</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>Pipeline Web Page</p></td>
+<td><p><a href="file:///mnt/c/Users/George/Documents/GitHub/p10_Siriwardane_et_al_2026/docs/index.html">Pipeline Web Page</p></td>
+</tr>
+<tr class="row-odd"><td><p>Date of Last Code Update</p></td>
+<td><p>2026-03-08 23:14:44</p></td>
+</tr>
+<tr class="row-even"><td><p>OS Compatibility</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>Linked Dataframes</p></td>
+<td><p><a class="reference internal" href="../dataframes/TR/bloomberg.html"><span class="std std-doc">TR:bloomberg</span></a><br></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+
+<div class="section ablog__blog_comments">
+     
+<div class="section ablog__prev-next">
+  <span class="ablog__prev">
+     
+    <a href="TR.treasury_futures_prices.html">
+      
+      <i class="fa fa-arrow-circle-left"></i>
+      
+      <span>Chart: Arbitrage Spreads by Tenor</span>
+    </a>
     
-    <span
-      >All  Posts 
-    </span>
-  </h1>
-   
-  <div class="section ablog-post">
-    <h2 class="ablog-post-title">
-      <a href="TR.underlying_futures_prices.html">Chart: Underlying Treasury Futures Prices by Tenor</a>
-    </h2>
-    <ul class="ablog-archive">
-      <li>
-         
-        <i class="fa fa-calendar"></i>
-        
-        <span>08 March 2026</span>
-        
-      </li>
-      <div class="ablog-sidebar-item ablog__postcard2">
-      
-  <li id="ablog-sidebar-item category ablog__category">
-    <span>
-      
-      <i class="fa-fw fa fa-folder-open"></i>
-      
-    </span>
+  </span>
+  <span class="ablog__spacer">&nbsp;</span>
+  <span class="ablog__next">
      
-    <a href="index/category/treasury-futures.html">Treasury Futures</a>
-     ,    
-    <a href="index/category/fixed-income.html">Fixed Income</a>
-     ,    
-    <a href="index/category/prices.html">Prices</a>
+    <a href="TR.implied_repo_vs_interpolated_ois.html">
+      <span>Chart: Implied Repo vs Interpolated OIS by Tenor</span>
       
-  </li>
-   
-  <li id="ablog-sidebar-item tags ablog__tags">
-    <span>
-       
-      <i class="fa-fw fa fa-tag"></i>
+      <i class="fa fa-arrow-circle-right"></i>
       
-    </span>
-     
-    <a href="index/tag/bloomberg-terminal.html">Bloomberg Terminal</a>
-      
-  </li>
-   
+    </a>
+    
+  </span>
 </div>
-    </ul>
-    <p class="ablog-post-excerpt"><p>Second-deferred Treasury futures prices for 2Y, 5Y, 10Y, 20Y, and 30Y contracts.</p>
-</p>
-
-    <p class="ablog-post-expand">
-      <a href="TR.underlying_futures_prices.html"><em>Read more ...</em></a>
-    </p>
-    <hr />
-  </div>
   
-  <div class="section ablog-post">
-    <h2 class="ablog-post-title">
-      <a href="TR.ois_input_rates.html">Chart: OIS Input Rates</a>
-    </h2>
-    <ul class="ablog-archive">
-      <li>
-         
-        <i class="fa fa-calendar"></i>
-        
-        <span>08 March 2026</span>
-        
-      </li>
-      <div class="ablog-sidebar-item ablog__postcard2">
-      
-  <li id="ablog-sidebar-item category ablog__category">
-    <span>
-      
-      <i class="fa-fw fa fa-folder-open"></i>
-      
-    </span>
-     
-    <a href="index/category/ois.html">Ois</a>
-     ,    
-    <a href="index/category/funding.html">Funding</a>
-     ,    
-    <a href="index/category/fixed-income.html">Fixed Income</a>
-      
-  </li>
-   
-  <li id="ablog-sidebar-item tags ablog__tags">
-    <span>
-       
-      <i class="fa-fw fa fa-tag"></i>
-      
-    </span>
-     
-    <a href="index/tag/bloomberg-terminal.html">Bloomberg Terminal</a>
-      
-  </li>
-   
-</div>
-    </ul>
-    <p class="ablog-post-excerpt"><p>OIS curve inputs (2M, 3M, 6M) used for interpolation in spread construction.</p>
-</p>
-
-    <p class="ablog-post-expand">
-      <a href="TR.ois_input_rates.html"><em>Read more ...</em></a>
-    </p>
-    <hr />
-  </div>
-  
-  <div class="section ablog-post">
-    <h2 class="ablog-post-title">
-      <a href="TR.implied_repo_vs_interpolated_ois.html">Chart: Implied Repo vs Interpolated OIS by Tenor</a>
-    </h2>
-    <ul class="ablog-archive">
-      <li>
-         
-        <i class="fa fa-calendar"></i>
-        
-        <span>08 March 2026</span>
-        
-      </li>
-      <div class="ablog-sidebar-item ablog__postcard2">
-      
-  <li id="ablog-sidebar-item category ablog__category">
-    <span>
-      
-      <i class="fa-fw fa fa-folder-open"></i>
-      
-    </span>
-     
-    <a href="index/category/treasury-futures.html">Treasury Futures</a>
-     ,    
-    <a href="index/category/arbitrage.html">Arbitrage</a>
-     ,    
-    <a href="index/category/ois.html">Ois</a>
-     ,    
-    <a href="index/category/implied-repo.html">Implied Repo</a>
-      
-  </li>
-   
-  <li id="ablog-sidebar-item tags ablog__tags">
-    <span>
-       
-      <i class="fa-fw fa fa-tag"></i>
-      
-    </span>
-     
-    <a href="index/tag/bloomberg-terminal.html">Bloomberg Terminal</a>
-      
-  </li>
-   
-</div>
-    </ul>
-    <p class="ablog-post-excerpt"><p>Comparison of implied repo rates and interpolated OIS financing benchmark across tenors.</p>
-</p>
-
-    <p class="ablog-post-expand">
-      <a href="TR.implied_repo_vs_interpolated_ois.html"><em>Read more ...</em></a>
-    </p>
-    <hr />
-  </div>
-  
-  <div class="section ablog-post">
-    <h2 class="ablog-post-title">
-      <a href="TR.holding_period_days.html">Chart: Holding Period Days by Tenor</a>
-    </h2>
-    <ul class="ablog-archive">
-      <li>
-         
-        <i class="fa fa-calendar"></i>
-        
-        <span>08 March 2026</span>
-        
-      </li>
-      <div class="ablog-sidebar-item ablog__postcard2">
-      
-  <li id="ablog-sidebar-item category ablog__category">
-    <span>
-      
-      <i class="fa-fw fa fa-folder-open"></i>
-      
-    </span>
-     
-    <a href="index/category/treasury-futures.html">Treasury Futures</a>
-     ,    
-    <a href="index/category/arbitrage.html">Arbitrage</a>
-     ,    
-    <a href="index/category/holding-period.html">Holding Period</a>
-      
-  </li>
-   
-  <li id="ablog-sidebar-item tags ablog__tags">
-    <span>
-       
-      <i class="fa-fw fa fa-tag"></i>
-      
-    </span>
-     
-    <a href="index/tag/bloomberg-terminal.html">Bloomberg Terminal</a>
-      
-  </li>
-   
-</div>
-    </ul>
-    <p class="ablog-post-excerpt"><p>Tenor-specific holding period in days implied by winning delivery choice in IRR construction.</p>
-</p>
-
-    <p class="ablog-post-expand">
-      <a href="TR.holding_period_days.html"><em>Read more ...</em></a>
-    </p>
-    <hr />
-  </div>
-  
-  <div class="section ablog-post">
-    <h2 class="ablog-post-title">
-      <a href="TR.treasury_futures_prices.html">Chart: Arbitrage Spreads by Tenor</a>
-    </h2>
-    <ul class="ablog-archive">
-      <li>
-         
-        <i class="fa fa-calendar"></i>
-        
-        <span>08 March 2026</span>
-        
-      </li>
-      <div class="ablog-sidebar-item ablog__postcard2">
-      
-  <li id="ablog-sidebar-item category ablog__category">
-    <span>
-      
-      <i class="fa-fw fa fa-folder-open"></i>
-      
-    </span>
-     
-    <a href="index/category/treasury-futures.html">Treasury Futures</a>
-     ,    
-    <a href="index/category/arbitrage.html">Arbitrage</a>
-     ,    
-    <a href="index/category/fixed-income.html">Fixed Income</a>
-     ,    
-    <a href="index/category/spreads.html">Spreads</a>
-      
-  </li>
-   
-  <li id="ablog-sidebar-item tags ablog__tags">
-    <span>
-       
-      <i class="fa-fw fa fa-tag"></i>
-      
-    </span>
-     
-    <a href="index/tag/bloomberg-terminal.html">Bloomberg Terminal</a>
-      
-  </li>
-   
-</div>
-    </ul>
-    <p class="ablog-post-excerpt"><p>Time series of Treasury spot-futures arbitrage spreads for 2Y, 5Y, 10Y, 20Y, and 30Y tenors.</p>
-</p>
-
-    <p class="ablog-post-expand">
-      <a href="TR.treasury_futures_prices.html"><em>Read more ...</em></a>
-    </p>
-    <hr />
-  </div>
-   
 </div>
 
                 </article>
@@ -635,6 +600,24 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#chart">Chart</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#chart-specs">Chart Specs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataframe-manifest">Dataframe Manifest</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pipeline-manifest">Pipeline Manifest</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

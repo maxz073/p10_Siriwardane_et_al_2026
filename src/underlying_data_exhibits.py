@@ -448,8 +448,8 @@ def build_ois_input_chart(ois_inputs: pd.DataFrame):
         snippet_filename="ois_input_rates_figure.tex",
         image_filename="ois_input_rates.png",
         caption=(
-            "OIS input rates at 2M, 3M, and 6M. Takeaway: these curve points are the "
-            "only OIS inputs used to interpolate the financing leg in spread construction."
+            "OIS input rates at 2M, 3M, and 6M. Takeaway: these are representative "
+            "curve points used to summarize financing-rate conditions in the writeup."
         ),
         label="fig:ois_input_rates",
     )
@@ -600,8 +600,9 @@ def main():
         tabular_filename="ois_input_summary_tabular.tex",
         table_filename="ois_input_summary_table.tex",
         caption=(
-            "Summary statistics for OIS tenors used in interpolation (2M, 3M, 6M). "
-            "Takeaway: these rates provide the financing leg against which implied repo is compared."
+            "Summary statistics for selected OIS tenors shown in this supporting exhibit "
+            "(2M, 3M, 6M). Takeaway: these rates summarize financing-rate conditions relevant "
+            "for interpreting implied repo and spread movements."
         ),
         label="table:ois_input_summary",
     )

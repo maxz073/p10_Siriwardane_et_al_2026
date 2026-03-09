@@ -1,60 +1,55 @@
 ---
 date: 2026-03-08 23:14:44
 tags: Bloomberg Terminal
-category: Treasury Futures, Arbitrage, Fixed Income, Spreads
+category: Treasury Futures, Arbitrage, Holding Period
 ---
 
-# Chart: Arbitrage Spreads by Tenor
-Time series of Treasury spot-futures arbitrage spreads for 2Y, 5Y, 10Y, 20Y, and 30Y tenors.
+# Chart: Holding Period Days by Tenor
+Tenor-specific holding period in days implied by winning delivery choice in IRR construction.
 
 ## Chart
 ```{raw} html
-<iframe src="../_static/TR/treasury_futures_prices.html" height="500px" width="100%"></iframe>
+<iframe src="../_static/TR/holding_period_days.html" height="500px" width="100%"></iframe>
 
 <p style="text-align: center;">Sources: Bloomberg Terminal</p>
 ```
-[Full Screen Chart](../download_chart/TR/treasury_futures_prices.html)
+[Full Screen Chart](../download_chart/TR/holding_period_days.html)
 
 
 
 
 
+**Description:** This chart shows holding period days by tenor, where holding period is determined by the delivery date (first vs last delivery window) that maximizes implied repo.
 
-**Description:** This chart shows the replicated Treasury spot-futures arbitrage spread in basis points for the 2Y, 5Y, 10Y, 20Y, and 30Y tenors. The spread is defined as implied repo minus interpolated OIS at the tenor-specific holding period.
+**Relevance for Financial Markets:** Holding period length determines which point of the OIS curve is relevant for financing and therefore directly affects spread measurement.
 
-**Relevance for Financial Markets:** The spread measures relative-value dislocations between Treasury cash and futures markets. It is useful for:
-- Tracking arbitrage pressure across maturities
-- Comparing mispricing intensity across tenors
-- Studying market segmentation and funding stress
-- Monitoring how financing conditions map into futures basis
+**Direction of Risk:** Longer holding periods typically map to longer-tenor OIS inputs; spread sensitivity can shift as holding periods change through time.
 
-**Direction of Risk:** A higher spread means implied repo is richer than the matched OIS financing benchmark; a lower or negative spread indicates less attractive (or reversed) basis opportunities.
+**Formulas Used:** Holding period days are computed from settlement (T+1 business day) to the selected delivery date.
 
-**Formulas Used:** Spread \(=\) Implied Repo \(-\) Interpolated OIS (both in bps).
-
-**Data Cleaning Information:** Input rows require positive futures volume and non-missing futures/CTD fields. Delivery windows are inferred from contract month, implied repo is computed for first and last delivery, and the maximum is retained before subtracting interpolated OIS.
+**Data Cleaning Information:** Tenor-level series come from the implied repo computation step and are plotted after date alignment.
 
 **Relation to a chart in an OFR public monitor:** N/A
 
-**What does this add that other charts might not?** It is the final replication deliverable and directly summarizes the arbitrage signal across the full tenor curve in one panel.
+**What does this add that other charts might not?** It explains a key mechanical channel behind spread movements that is not visible in price-only charts.
 
 
 
 ## Chart Specs
 
-| Chart Name             | Arbitrage Spreads by Tenor                                             |
+| Chart Name             | Holding Period Days by Tenor                                             |
 |------------------------|------------------------------------------------------------|
-| Chart ID               | treasury_futures_prices                                               |
-| Topic Tags             | Treasury Futures, Arbitrage, Fixed Income, Spreads                                |
+| Chart ID               | holding_period_days                                               |
+| Topic Tags             | Treasury Futures, Arbitrage, Holding Period                                |
 | Data Series Start Date | 2010-01-01                                 |
 | Data Frequency         | Daily                                         |
 | Observation Period     | Weekday                                     |
 | Lag in Data Release    | One day                                    |
 | Data Release Timing    |                                     |
 | Seasonal Adjustment    | None                                    |
-| Units                  | Basis Points                                                  |
-| Data Series            | 2, Y, ,,  , 5, Y, ,,  , 1, 0, Y, ,,  , 2, 0, Y, ,,  , 3, 0, Y,  , a, r, b, i, t, r, a, g, e,  , s, p, r, e, a, d, s                                            |
-| HTML Chart             | [HTML](../download_chart/TR/treasury_futures_prices.html)    |
+| Units                  | Days                                                  |
+| Data Series            | 2, Y, ,,  , 5, Y, ,,  , 1, 0, Y, ,,  , 2, 0, Y, ,,  , 3, 0, Y,  , h, o, l, d, i, n, g,  , p, e, r, i, o, d,  , d, a, y, s                                            |
+| HTML Chart             | [HTML](../download_chart/TR/holding_period_days.html)    |
 
 
 ## Dataframe Manifest

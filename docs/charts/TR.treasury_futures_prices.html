@@ -191,11 +191,31 @@
   <ul>
      
     <li>
-      <a href="index/category/arbitrage.html">Arbitrage (1)</a>
+      <a href="index/category/arbitrage.html">Arbitrage (3)</a>
     </li>
       
     <li>
-      <a href="index/category/fixed-income.html">Fixed Income (1)</a>
+      <a href="index/category/fixed-income.html">Fixed Income (3)</a>
+    </li>
+      
+    <li>
+      <a href="index/category/funding.html">Funding (1)</a>
+    </li>
+      
+    <li>
+      <a href="index/category/holding-period.html">Holding Period (1)</a>
+    </li>
+      
+    <li>
+      <a href="index/category/implied-repo.html">Implied Repo (1)</a>
+    </li>
+      
+    <li>
+      <a href="index/category/ois.html">Ois (2)</a>
+    </li>
+      
+    <li>
+      <a href="index/category/prices.html">Prices (1)</a>
     </li>
       
     <li>
@@ -203,7 +223,7 @@
     </li>
       
     <li>
-      <a href="index/category/treasury-futures.html">Treasury Futures (1)</a>
+      <a href="index/category/treasury-futures.html">Treasury Futures (4)</a>
     </li>
      
   </ul>
@@ -392,25 +412,19 @@ document.write(`
 <iframe src="../_static/TR/treasury_futures_prices.html" height="500px" width="100%"></iframe>
 
 <p style="text-align: center;">Sources: Bloomberg Terminal</p><p><a class="reference download internal" download="" href="../_downloads/bd4f2e98658d079018e9fcbdc5bfcded/treasury_futures_prices.html"><span class="xref download myst">Full Screen Chart</span></a></p>
-<p><strong>Description:</strong> This chart visualizes the price movements of Treasury futures contracts across different maturities over time. It includes both first generic (most actively traded near-month) and second generic contracts for 2-year, 5-year, 10-year, 30-year Treasury notes/bonds, and Ultra 10-year notes. The interactive chart allows users to compare price trends across different maturities and contract series.</p>
-<p><strong>Relevance for Financial Markets:</strong> Treasury futures prices reflect market expectations about future interest rates and economic conditions. Price movements in these contracts are crucial for:</p>
+<p><strong>Description:</strong> This chart shows the replicated Treasury spot-futures arbitrage spread in basis points for the 2Y, 5Y, 10Y, 20Y, and 30Y tenors. The spread is defined as implied repo minus interpolated OIS at the tenor-specific holding period.</p>
+<p><strong>Relevance for Financial Markets:</strong> The spread measures relative-value dislocations between Treasury cash and futures markets. It is useful for:</p>
 <ul class="simple">
-<li><p>Hedging interest rate risk</p></li>
-<li><p>Speculating on interest rate movements</p></li>
-<li><p>Understanding yield curve dynamics</p></li>
-<li><p>Assessing market sentiment about future Fed policy</p></li>
+<li><p>Tracking arbitrage pressure across maturities</p></li>
+<li><p>Comparing mispricing intensity across tenors</p></li>
+<li><p>Studying market segmentation and funding stress</p></li>
+<li><p>Monitoring how financing conditions map into futures basis</p></li>
 </ul>
-<p><strong>Direction of Risk:</strong> Rising futures prices indicate falling expected yields (positive market sentiment), while falling prices indicate rising expected yields (negative sentiment or expectations of Fed tightening).</p>
-<p><strong>Formulas Used:</strong> N/A - Direct price data from Bloomberg Terminal.</p>
-<p><strong>Data Cleaning Information:</strong> The chart uses the <code class="docutils literal notranslate"><span class="pre">PX_Last</span></code> field from Bloomberg, which represents the last traded price for each futures contract. Data is filtered to remove NaN values before plotting.</p>
+<p><strong>Direction of Risk:</strong> A higher spread means implied repo is richer than the matched OIS financing benchmark; a lower or negative spread indicates less attractive (or reversed) basis opportunities.</p>
+<p><strong>Formulas Used:</strong> Spread (=) Implied Repo (-) Interpolated OIS (both in bps).</p>
+<p><strong>Data Cleaning Information:</strong> Input rows require positive futures volume and non-missing futures/CTD fields. Delivery windows are inferred from contract month, implied repo is computed for first and last delivery, and the maximum is retained before subtracting interpolated OIS.</p>
 <p><strong>Relation to a chart in an OFR public monitor:</strong> N/A</p>
-<p><strong>What does this add that other charts might not?</strong> This chart provides a comprehensive view across multiple maturities and contract series simultaneously, allowing for:</p>
-<ol class="arabic simple">
-<li><p>Cross-maturity comparisons to understand yield curve shifts</p></li>
-<li><p>Roll dynamics by comparing first vs second generic contracts</p></li>
-<li><p>Identification of relative value opportunities across the curve</p></li>
-<li><p>Assessment of market liquidity and trading patterns</p></li>
-</ol>
+<p><strong>What does this add that other charts might not?</strong> It is the final replication deliverable and directly summarizes the arbitrage signal across the full tenor curve in one panel.</p>
 </section>
 <section id="chart-specs">
 <h2>Chart Specs<a class="headerlink" href="#chart-specs" title="Link to this heading">#</a></h2>
@@ -503,6 +517,10 @@ document.write(`
 <p><strong>Linked Charts:</strong></p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#../../charts/TR.treasury_futures_prices.md"><span class="xref myst">TR:treasury_futures_prices</span></a></p></li>
+<li><p><a class="reference internal" href="#../../charts/TR.underlying_futures_prices.md"><span class="xref myst">TR:underlying_futures_prices</span></a></p></li>
+<li><p><a class="reference internal" href="#../../charts/TR.ois_input_rates.md"><span class="xref myst">TR:ois_input_rates</span></a></p></li>
+<li><p><a class="reference internal" href="#../../charts/TR.holding_period_days.md"><span class="xref myst">TR:holding_period_days</span></a></p></li>
+<li><p><a class="reference internal" href="#../../charts/TR.implied_repo_vs_interpolated_ois.md"><span class="xref myst">TR:implied_repo_vs_interpolated_ois</span></a></p></li>
 </ul>
 </section>
 <section id="pipeline-manifest">
@@ -530,7 +548,7 @@ document.write(`
 <td><p><a href="file:///mnt/c/Users/George/Documents/GitHub/p10_Siriwardane_et_al_2026/docs/index.html">Pipeline Web Page</p></td>
 </tr>
 <tr class="row-odd"><td><p>Date of Last Code Update</p></td>
-<td><p>2026-03-08 22:13:16</p></td>
+<td><p>2026-03-08 23:14:44</p></td>
 </tr>
 <tr class="row-even"><td><p>OS Compatibility</p></td>
 <td><p></p></td>
@@ -552,6 +570,13 @@ document.write(`
   </span>
   <span class="ablog__spacer">&nbsp;</span>
   <span class="ablog__next">
+     
+    <a href="TR.holding_period_days.html">
+      <span>Chart: Holding Period Days by Tenor</span>
+      
+      <i class="fa fa-arrow-circle-right"></i>
+      
+    </a>
     
   </span>
 </div>

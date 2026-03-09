@@ -465,6 +465,14 @@ $ Date                                        <date> 2026-01-01
 
 - [TR:treasury_futures_prices](../../charts/TR.treasury_futures_prices.md)
 
+- [TR:underlying_futures_prices](../../charts/TR.underlying_futures_prices.md)
+
+- [TR:ois_input_rates](../../charts/TR.ois_input_rates.md)
+
+- [TR:holding_period_days](../../charts/TR.holding_period_days.md)
+
+- [TR:implied_repo_vs_interpolated_ois](../../charts/TR.implied_repo_vs_interpolated_ois.md)
+
 
 
 ## Pipeline Manifest
@@ -476,7 +484,7 @@ $ Date                                        <date> 2026-01-01
 | Contributors                    | George Lord, Max Zhalilo           |
 | Git Repo URL                    |                         |
 | Pipeline Web Page               | <a href="file:///mnt/c/Users/George/Documents/GitHub/p10_Siriwardane_et_al_2026/docs/index.html">Pipeline Web Page      |
-| Date of Last Code Update        | 2026-03-08 22:13:16           |
+| Date of Last Code Update        | 2026-03-08 23:14:44           |
 | OS Compatibility                |  |
 | Linked Dataframes               |  [TR:bloomberg](../dataframes/TR/bloomberg.md)<br>  |
 
