@@ -27,8 +27,11 @@ OIS_MONTH_TICKERS = {
     2: "USSOB CMPN Curncy",
     3: "USSOC CMPN Curncy",
     6: "USSOF CMPN Curncy",
+    4: "USSOD CMPN Curncy",
+    5: "USSOE CMPN Curncy",
+    9: "USSOI CMPN Curncy",
 }
-OIS_MONTH_ORDER = [2, 3, 6]
+OIS_MONTH_ORDER = [2, 3, 4, 5, 6, 9]
 
 FUTURES_FIELDS = [
     "px_last",

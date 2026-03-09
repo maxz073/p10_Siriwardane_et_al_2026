@@ -104,8 +104,8 @@ CRSP does not provide an explicit coupon schedule in the pulled tables, so the c
 The replication succeeded in producing a complete, automated spread pipeline from staged Bloomberg and CRSP inputs through implied repo, interpolated OIS, and final tenor-level spreads. In the current outputs, all five tenor series are populated and the arbitrage spread panel spans \texttt{2010-01-04} to \texttt{2026-01-30}, with supporting tables and figures generated from the same inputs.
 
 \subsection{Challenges and limitations}
-The hardest parts were data and mapping frictions: Bloomberg/WRDS access constraints, aligning daily futures records to CTD bond CUSIPs, and handling incomplete historical delivery-date fields. On the bond side, CRSP does not directly provide all coupon schedule fields needed for carry calculations, so we use transparent assumptions (semiannual coupons and ACT/ACT conventions) that may still leave small differences versus the original implementation.
-
+The hardest parts were data and mapping frictions, as well as our implied repo rate calculations: Bloomberg/WRDS access constraints, aligning daily futures records to CTD bond CUSIPs, and handling incomplete historical delivery-date fields. On the bond side, CRSP does not directly provide all coupon schedule fields needed for carry calculations, so we use transparent assumptions (semiannual coupons and ACT/ACT conventions) that may still leave small differences versus the original implementation.
+Because Bloomberg's implied repo rate doesn't include an optimal delivery for the futures, we implemented our own implied repo rate calculations to include the optimal delivery date. Our calculated irr is noisier than Bloomberg's due to small differences in the delivery date, accrued interest, coupon payments; the noise becomes more pronounced for longer tenors.
 \subsection{Interactive chart outputs}
 
 When the site is built/deployed, interactive versions of the charts in this document are available in the chartbook at:
