@@ -1,3 +1,9 @@
+"""
+Unit tests for plot_spreads utilities: load_spreads and select_tenors.
+
+Checks date index handling, sorting, and tenor column selection/ordering.
+"""
+
 from pathlib import Path
 
 import pandas as pd
@@ -7,6 +13,7 @@ from plot_spreads import load_spreads, select_tenors
 
 
 def test_load_spreads_sets_date_index_and_sorts(tmp_path: Path):
+    """load_spreads sets Date as index and sorts by date."""
     df = pd.DataFrame(
         {
             "Date": ["2025-01-03", "2025-01-02"],
@@ -27,6 +34,7 @@ def test_load_spreads_sets_date_index_and_sorts(tmp_path: Path):
 
 
 def test_select_tenors_returns_stable_order_and_rejects_missing_tenors():
+    """select_tenors returns TENOR_ORDER subset and raises when no tenor columns exist."""
     df = pd.DataFrame(columns=["10Y", "2Y", "UNUSED"])
     assert select_tenors(df) == ["2Y", "10Y"]
 

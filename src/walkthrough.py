@@ -1,5 +1,5 @@
 """
-Single-date walkthrough: print inputs and steps for IRR (max of first/last delivery).
+Single-date walkthrough: print inputs and steps for IRR (max over first, ex-coupon, coupon, last delivery).
 Run: python walkthrough.py [DATE]
 """
 from __future__ import annotations
@@ -12,6 +12,7 @@ from calc_spread import (
     MANUAL_DATA_DIR,
     TENOR_CONTRACTS,
     _compute_ae_ic_d1_d2,
+    _delivery_candidate_dates,
     _delivery_dates_from_contract_month,
     _extract_contract_series,
     _load_irr_bonds,
@@ -68,7 +69,7 @@ def walkthrough_one_date(
     print(f"WALKTHROUGH: {walk_date.date()}")
     print("=" * 70)
     print("\nIRR = (F*CF + Ae + Ic - (P+Ab)) / (d1*(P+Ab) - Ic*d2)  →  bps (×10_000)")
-    print("Delivery: max(IRR with first delivery date, IRR with last delivery date).\n")
+    print("Delivery: max(IRR over first delivery, ex-coupon date, coupon date, last delivery).\n")
 
     for tenor, ticker in TENOR_CONTRACTS.items():
         print("-" * 70)
@@ -120,9 +121,26 @@ def walkthrough_one_date(
         print(f"    prev_coupon_date = {row['prev_coupon_date']}")
         print(f"    Date (caldt) = {walk_date}")
 
-        one = row.to_frame().T.reset_index(drop=True)
-        m_first = _compute_ae_ic_d1_d2(one.copy(), "fut_dlv_dt_first").iloc[0]
-        m_last = _compute_ae_ic_d1_d2(one.copy(), "fut_dlv_dt_last").iloc[0]
+        first_dlv = pd.Timestamp(row["fut_dlv_dt_first"]).normalize()
+        last_dlv = pd.Timestamp(row["fut_dlv_dt_last"]).normalize()
+        next_cpn_val = row.get("next_coupon_date")
+        candidates = _delivery_candidate_dates(first_dlv, last_dlv, next_cpn_val)
+
+        def _label_candidate(dlv: pd.Timestamp) -> str:
+            """Return human-readable label for a delivery candidate (first/last/ex-coupon/coupon)."""
+            dlv = pd.Timestamp(dlv).normalize()
+            if dlv == first_dlv:
+                return "First delivery"
+            if dlv == last_dlv:
+                return "Last delivery"
+            if pd.notna(next_cpn_val):
+                next_cpn_n = pd.Timestamp(next_cpn_val).normalize()
+                ex_coupon = (next_cpn_n - pd.offsets.BDay(1)).normalize()
+                if dlv == ex_coupon:
+                    return "Ex-coupon date"
+                if dlv == next_cpn_n:
+                    return "Coupon date"
+            return f"Delivery ({dlv.date()})"
 
         def print_intermediates_for_delivery(label: str, m: pd.Series, delivery_col: str) -> float | None:
             """Print intermediates for one delivery date; return IRR in bps or None. Matches calc_spread._compute_ae_ic_d1_d2 and _irr_series."""
@@ -145,9 +163,15 @@ def walkthrough_one_date(
             d1 = float(m["d1"])  # (delivery - settlement_date).days / 360
             d2 = float(m["d2"])
             ex_coupon_date = next_cpn - pd.offsets.BDay(1)
-            mask_cpn = (caldt < ex_coupon_date) and (ex_coupon_date <= delivery)
+            mask_cpn = (caldt < ex_coupon_date) and (next_cpn <= delivery)
 
-            print(f"  INTERMEDIATES — {label}")
+            P_Ab = P + Ab_settle
+            num = (F * CF) + Ae + Ic - P_Ab
+            denom = (d1 * P_Ab) - (Ic * d2)
+            bps = (num * 10_000 / denom) if denom > 0 else None
+
+            print(f"  INTERMEDIATES — {label}  (delivery {delivery.date()})")
+            print(f"    IRR = {bps:.2f} bps" if bps is not None else "    IRR = (invalid, denom <= 0)")
             print(f"    coupon_cash_per_period = coupon_rate / freq = {row['coupon_rate']} / {freq} = {coupon_cash:.6f}")
             print(f"    settlement_date = caldt + BDay(1) = {settlement_date.date()}")
             print(f"    Ab (accrued at settlement) = {Ab_settle:.6f}")
@@ -156,28 +180,34 @@ def walkthrough_one_date(
             print(f"    period_days = {period_days}, accrued_days_end = {accrued_days_end}")
             print(f"    Ae = coupon_cash * accrued_days_end / period_days = {Ae:.6f}")
             print(f"    ex_coupon_date = next_cpn - BDay(1) = {ex_coupon_date.date()}")
-            print(f"    mask_cpn (caldt < ex_coupon <= delivery): {mask_cpn}")
+            print(f"    mask_cpn (caldt < ex_coupon and next_cpn <= delivery): {mask_cpn}")
             print(f"    Ic = {Ic:.6f}, d1 = (delivery - settlement).days/360 = {d1:.6f}, d2 = {d2:.6f}")
             P_Ab = P + Ab_settle
             num = (F * CF) + Ae + Ic - P_Ab
             denom = (d1 * P_Ab) - (Ic * d2)
             print(f"    numerator = F*CF + Ae + Ic - (P+Ab) = {F}*{CF} + {Ae:.4f} + {Ic:.4f} - {P_Ab:.4f} = {num:.6f}")
             print(f"    denominator = d1*(P+Ab) - Ic*d2 = {d1:.6f}*{P_Ab:.4f} - {Ic:.6f}*{d2:.6f} = {denom:.6f}")
-            bps = (num * 10_000 / denom) if denom > 0 else None
             if bps is not None:
                 print(f"    IRR_bps = numerator * 10_000 / denominator = {bps:.2f} bps")
             else:
                 print(f"    IRR_bps = (invalid, denom <= 0)")
             return bps
 
-        irr_first = print_intermediates_for_delivery("First delivery", m_first, "fut_dlv_dt_first")
-        print("")
-        irr_last = print_intermediates_for_delivery("Last delivery", m_last, "fut_dlv_dt_last")
+        irr_values = []
+        for dlv in candidates:
+            temp = row.to_frame().T.reset_index(drop=True)
+            temp["candidate_delivery"] = dlv
+            m_df = _compute_ae_ic_d1_d2(temp, "candidate_delivery")
+            m = m_df.iloc[0]
+            label = _label_candidate(dlv)
+            irr_bps = print_intermediates_for_delivery(label, m, "candidate_delivery")
+            if irr_bps is not None:
+                irr_values.append(irr_bps)
+            print("")
 
-        vals = [v for v in (irr_first, irr_last) if v is not None]
-        final = max(vals) if vals else None
+        final = max(irr_values) if irr_values else None
         print("  FINAL")
-        print(f"    max(IRR_first, IRR_last) = {final:.2f} bps\n" if final else "    (invalid)\n")
+        print(f"    max(IRR over candidates: first, ex-coupon, coupon, last) = {final:.2f} bps\n" if final else "    (invalid)\n")
 
     print("=" * 70)
 

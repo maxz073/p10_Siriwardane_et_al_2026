@@ -27,6 +27,7 @@ CRSP_TIDY_PATH = DATA_DIR / "crsp_inputs_tidy.parquet"
 
 
 def _load_bloomberg_raw(path: Path) -> pd.DataFrame:
+    """Load raw Bloomberg parquet; set Date index and normalize timestamps."""
     if not path.exists():
         raise FileNotFoundError(f"Bloomberg raw input not found: {path}")
     df = pd.read_parquet(path)
@@ -143,6 +144,7 @@ def tidy_crsp_inputs(path: Path) -> pd.DataFrame:
 
 
 def main():
+    """Load raw inputs, run tidy steps, and write futures/OIS/CRSP parquets to DATA_DIR."""
     bloomberg_raw_path = DATA_DIR / "bloomberg.parquet"
     crsp_raw_path = DATA_DIR / "TFZ_IRR.parquet"
 

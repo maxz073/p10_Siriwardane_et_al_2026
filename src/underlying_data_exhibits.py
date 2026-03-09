@@ -57,6 +57,7 @@ def get_field_series(df: pd.DataFrame, ticker: str, field: str) -> pd.Series | N
 
 
 def _normalize_date_index(df: pd.DataFrame, date_col: str = "Date") -> pd.DataFrame:
+    """Set date_col as index, normalize to midnight, and sort by index."""
     out = df.copy()
     if date_col in out.columns:
         out = out.set_index(date_col)
@@ -65,6 +66,7 @@ def _normalize_date_index(df: pd.DataFrame, date_col: str = "Date") -> pd.DataFr
 
 
 def _ensure_exists(path: Path):
+    """Raise FileNotFoundError if path does not exist."""
     if not path.exists():
         raise FileNotFoundError(f"Missing required file: {path}")
 
@@ -93,6 +95,7 @@ def load_inputs() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFram
 
 
 def _float_format(x: float) -> str:
+    """Format float for LaTeX table (comma-separated, 2 decimal places)."""
     return f"{x:,.2f}"
 
 
@@ -136,6 +139,7 @@ def write_figure_snippet(
     caption: str,
     label: str,
 ):
+    """Write a LaTeX figure snippet (\\begin{figure}...\\includegraphics...) to OUTPUT_DIR."""
     snippet = "\n".join(
         [
             r"\begin{figure}[htbp]",
@@ -411,6 +415,7 @@ def build_spread_component_summary_table(
 
 
 def build_underlying_futures_prices_chart(bloomberg: pd.DataFrame):
+    """Build line chart of second-deferred futures prices by tenor and write PNG/HTML/TeX."""
     chart_df = pd.DataFrame(index=bloomberg.index)
     for tenor in TENOR_ORDER:
         ticker = TENOR_TO_TICKER[tenor]
@@ -437,6 +442,7 @@ def build_underlying_futures_prices_chart(bloomberg: pd.DataFrame):
 
 
 def build_ois_input_chart(ois_inputs: pd.DataFrame):
+    """Build OIS input rates chart (2M, 3M, 6M) and write PNG/HTML/TeX."""
     write_line_chart(
         df=ois_inputs,
         title="OIS Inputs Used for Interpolation (2M, 3M, 6M)",
@@ -456,6 +462,7 @@ def build_ois_input_chart(ois_inputs: pd.DataFrame):
 
 
 def build_holding_period_chart(holding_period_days: pd.DataFrame):
+    """Build holding-period-by-tenor chart and write PNG/HTML/TeX."""
     chart_df = holding_period_days[[tenor for tenor in TENOR_ORDER if tenor in holding_period_days.columns]]
     write_line_chart(
         df=chart_df,
@@ -476,6 +483,7 @@ def build_holding_period_chart(holding_period_days: pd.DataFrame):
 
 
 def build_implied_repo_vs_ois_chart(implied_repo: pd.DataFrame, interpolated_ois_bps: pd.DataFrame):
+    """Build implied repo vs interpolated OIS (solid vs dashed) chart by tenor; write PNG/HTML/TeX."""
     tenors = [tenor for tenor in TENOR_ORDER if tenor in implied_repo.columns and tenor in interpolated_ois_bps.columns]
     if not tenors:
         raise ValueError("No overlapping tenor columns between implied repo and interpolated OIS.")
@@ -557,6 +565,7 @@ def build_implied_repo_vs_ois_chart(implied_repo: pd.DataFrame, interpolated_ois
 
 
 def main():
+    """Load inputs, build summary tables and charts for the writeup, and write all exhibit files to OUTPUT_DIR."""
     bloomberg, spreads, implied_repo, holding_period_days, irr_bonds = load_inputs()
     ois_inputs = extract_ois_inputs(bloomberg)
     interpolated_ois_bps = interpolate_ois_to_holding_period(ois_inputs, holding_period_days)

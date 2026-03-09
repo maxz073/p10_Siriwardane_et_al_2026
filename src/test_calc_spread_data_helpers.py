@@ -1,3 +1,9 @@
+"""
+Unit tests for calc_spread data helpers: _col, _extract_contract_series, _interpolate_ois_at_holding_period.
+
+Checks MultiIndex column lookup, contract series extraction, and OIS interpolation.
+"""
+
 import numpy as np
 import pandas as pd
 
@@ -5,6 +11,7 @@ from calc_spread import _col, _extract_contract_series, _interpolate_ois_at_hold
 
 
 def test_col_multiindex_lookup_is_case_insensitive_for_field():
+    """_col finds (ticker, field) with case-insensitive field name."""
     idx = pd.to_datetime(["2025-01-02", "2025-01-03"])
     cols = pd.MultiIndex.from_tuples(
         [
@@ -22,6 +29,7 @@ def test_col_multiindex_lookup_is_case_insensitive_for_field():
 
 
 def test_extract_contract_series_keeps_only_required_fields_for_ticker():
+    """_extract_contract_series returns only FIELDS_NEEDED for the given ticker."""
     idx = pd.to_datetime(["2025-01-02"])
     cols = pd.MultiIndex.from_tuples(
         [
@@ -54,6 +62,7 @@ def test_extract_contract_series_keeps_only_required_fields_for_ticker():
 
 
 def test_interpolate_ois_clips_to_bounds_and_interpolates_interior():
+    """OIS interpolation clips to tenor bounds and interpolates linearly in between."""
     hold_months = np.array([1.0, 2.5, 7.0, 10.0])
     ois_curve = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 8.0])  # 2M,3M,4M,5M,6M,9M
 

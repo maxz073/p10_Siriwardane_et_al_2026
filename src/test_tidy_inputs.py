@@ -1,9 +1,17 @@
+"""
+Unit tests for tidy_inputs: tidy_futures_inputs and tidy_ois_inputs.
+
+Verifies extraction of long-format rows from Bloomberg-style DataFrames,
+delivery date derivation, and handling of empty/unsupported inputs.
+"""
+
 import pandas as pd
 
 from tidy_inputs import tidy_futures_inputs, tidy_ois_inputs
 
 
 def test_tidy_futures_inputs_extracts_long_rows_for_available_tenors():
+    """Tidy futures inputs produce one row per date/tenor with correct delivery dates."""
     idx = pd.to_datetime(["2025-01-02", "2025-01-03"])
     cols = pd.MultiIndex.from_tuples(
         [
@@ -33,6 +41,7 @@ def test_tidy_futures_inputs_extracts_long_rows_for_available_tenors():
 
 
 def test_tidy_ois_inputs_extracts_month_tagged_series():
+    """OIS inputs are extracted with ois_month and rate columns for each ticker."""
     idx = pd.to_datetime(["2025-01-02", "2025-01-03"])
     cols = pd.MultiIndex.from_tuples(
         [
@@ -57,6 +66,7 @@ def test_tidy_ois_inputs_extracts_month_tagged_series():
 
 
 def test_tidy_futures_inputs_returns_empty_when_no_supported_contracts():
+    """When no TENOR_CONTRACTS match, returns empty DataFrame with expected columns."""
     idx = pd.to_datetime(["2025-01-02"])
     cols = pd.MultiIndex.from_tuples([("UNRELATED TICKER", "PX_LAST")])
     bbg_df = pd.DataFrame([[100.0]], index=idx, columns=cols)

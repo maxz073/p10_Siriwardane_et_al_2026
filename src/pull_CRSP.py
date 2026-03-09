@@ -255,6 +255,7 @@ def compute_accrued_interest_end(
 
 
 def load_CRSP_treasury_for_irr(data_dir=DATA_DIR):
+    """Load pre-saved TFZ_IRR.parquet and filter to caldt <= END_DATE."""
     path = data_dir / "TFZ_IRR.parquet"
     df = pd.read_parquet(path)
     df = df[df["caldt"] <= END_DATE]

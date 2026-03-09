@@ -1,3 +1,9 @@
+"""
+Unit tests for calc_spread IRR formula: _irr_series.
+
+Verifies numerator/denominator formula, handling of d1 <= 0 and invalid denominator.
+"""
+
 import numpy as np
 import pandas as pd
 
@@ -5,6 +11,7 @@ from calc_spread import _irr_series
 
 
 def test_irr_series_applies_formula_and_masks_invalid_rows():
+    """_irr_series returns bps where denom > 0 and d1 > 0; NaN otherwise."""
     idx = pd.to_datetime(["2025-01-02", "2025-01-03", "2025-01-06", "2025-01-07"])
     merged = pd.DataFrame(index=idx)
 

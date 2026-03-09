@@ -112,6 +112,7 @@ def _delivery_dates_from_contract_month(raw: pd.DataFrame) -> pd.DataFrame:
 
 
 def _col(bbg_df: pd.DataFrame, ticker: str, field: str):
+    """Look up a (ticker, field) column in Bloomberg DataFrame; supports MultiIndex or flat columns."""
     if isinstance(bbg_df.columns, pd.MultiIndex):
         if (ticker, field) in bbg_df.columns:
             return bbg_df[(ticker, field)]
@@ -126,6 +127,7 @@ def _col(bbg_df: pd.DataFrame, ticker: str, field: str):
 
 
 def _extract_contract_series(bbg_df: pd.DataFrame, ticker: str) -> pd.DataFrame:
+    """Extract required futures fields for one ticker from Bloomberg data into a long-style DataFrame."""
     out = pd.DataFrame(index=bbg_df.index)
     out.index.name = "Date"
     for f in FIELDS_NEEDED:
@@ -136,6 +138,7 @@ def _extract_contract_series(bbg_df: pd.DataFrame, ticker: str) -> pd.DataFrame:
 
 
 def _load_irr_bonds(manual_dir: Path) -> pd.DataFrame:
+    """Load CRSP/IRR bond data from tidy parquet or TFZ_IRR.parquet; normalize dates and CUSIPs."""
     tidy_path = manual_dir / CRSP_TIDY_FILE
     path = tidy_path if tidy_path.exists() else (manual_dir / "TFZ_IRR.parquet")
     if not path.exists():
@@ -205,6 +208,7 @@ def _irr_series(merged: pd.DataFrame, m: pd.DataFrame, P: pd.Series, Ab: pd.Seri
 
 
 def load_bloomberg(manual_dir: Path) -> pd.DataFrame:
+    """Load Bloomberg parquet from manual_dir; set Date index and normalize timestamps."""
     path = manual_dir / "bloomberg.parquet"
     if not path.exists():
         raise FileNotFoundError(f"Bloomberg data not found: {path}")
@@ -216,6 +220,7 @@ def load_bloomberg(manual_dir: Path) -> pd.DataFrame:
 
 
 def _load_tidy_futures_inputs(manual_dir: Path) -> pd.DataFrame:
+    """Load pre-tidied futures inputs parquet; require Date column and normalize."""
     path = manual_dir / FUTURES_TIDY_FILE
     if not path.exists():
         raise FileNotFoundError(f"Tidy futures inputs not found: {path}")
@@ -227,6 +232,7 @@ def _load_tidy_futures_inputs(manual_dir: Path) -> pd.DataFrame:
 
 
 def _load_tidy_ois_inputs(manual_dir: Path) -> pd.DataFrame:
+    """Load pre-tidied OIS inputs parquet; require Date column and normalize."""
     path = manual_dir / OIS_TIDY_FILE
     if not path.exists():
         raise FileNotFoundError(f"Tidy OIS inputs not found: {path}")
@@ -362,6 +368,7 @@ def calc_implied_repo_per_tenor(
     tenor: str,
     ticker: str,
 ) -> pd.DataFrame:
+    """Compute implied repo (and holding period) for one tenor from raw Bloomberg + CRSP; Date-indexed."""
     raw = _extract_contract_series(bbg_df, ticker)
     if raw.empty or "px_last" not in raw.columns:
         return pd.DataFrame()
@@ -474,6 +481,7 @@ def calc_irr(bloomberg_path: Path | None = None, irr_path: Path | None = None) -
 
 
 def _extract_ois_series(bbg_df: pd.DataFrame, ois_ticker: str) -> pd.Series:
+    """Extract OIS rate series (px_last) for one ticker from Bloomberg DataFrame."""
     s = _col(bbg_df, ois_ticker, "px_last")
     if s is None:
         return pd.Series(dtype=float)
@@ -594,7 +602,87 @@ def calc_arbitrage_spread(
     return (irr_aligned - ois_aligned).sort_index()
 
 
+def calc_ois_at_holding_period(
+    implied_repo_df: pd.DataFrame | None = None,
+    holding_period_df: pd.DataFrame | None = None,
+    bloomberg_path: Path | None = None,
+    manual_dir: Path | None = None,
+) -> pd.DataFrame:
+    """OIS rate (bps) interpolated at holding period per tenor. Same inputs as calc_arbitrage_spread.
+    Returns DataFrame with index=Date, columns=2Y,5Y,10Y,20Y,30Y, values in bps."""
+    manual_dir = manual_dir or MANUAL_DATA_DIR
+    bbg_path = bloomberg_path or (manual_dir / "bloomberg.parquet")
+    if implied_repo_df is None:
+        ir_path = manual_dir / "implied_repo_first_deferred.parquet"
+        if not ir_path.exists():
+            raise FileNotFoundError(f"Implied repo not found: {ir_path}. Run main() first.")
+        implied_repo_df = pd.read_parquet(ir_path)
+    if "Date" in implied_repo_df.columns:
+        implied_repo_df = implied_repo_df.set_index("Date")
+    implied_repo_df.index = pd.to_datetime(implied_repo_df.index).normalize()
+
+    if holding_period_df is None:
+        hp_path = manual_dir / "holding_period_days.parquet"
+        if not hp_path.exists():
+            raise FileNotFoundError(
+                f"Holding period not found: {hp_path}. Run main() to generate implied repo and holding period."
+            )
+        holding_period_df = pd.read_parquet(hp_path)
+    if "Date" in holding_period_df.columns:
+        holding_period_df = holding_period_df.set_index("Date")
+    holding_period_df.index = pd.to_datetime(holding_period_df.index).normalize()
+
+    if not Path(bbg_path).is_file():
+        raise FileNotFoundError(f"Bloomberg data not found: {bbg_path}")
+    bbg_df = pd.read_parquet(bbg_path)
+    if "Date" in bbg_df.columns:
+        bbg_df = bbg_df.set_index("Date")
+    bbg_df.index = pd.to_datetime(bbg_df.index).normalize()
+
+    ois_by_month = {}
+    for m in OIS_MONTH_TENORS:
+        ticker = OIS_MONTH_TICKERS.get(m)
+        if ticker is None:
+            continue
+        s = _extract_ois_series(bbg_df, ticker)
+        if s is not None and not s.empty:
+            ois_by_month[m] = s
+    if len(ois_by_month) != len(OIS_MONTH_TENORS):
+        missing = set(OIS_MONTH_TENORS) - set(ois_by_month.keys())
+        raise FileNotFoundError(
+            f"Bloomberg OIS data missing for month tenors: {missing}. "
+            f"Ensure pull_bloomberg includes OIS_MONTH_CONTRACTS (2M–9M)."
+        )
+
+    common_idx = implied_repo_df.index.intersection(holding_period_df.index).intersection(bbg_df.index)
+    common_idx = common_idx.sort_values()
+    implied_repo_df = implied_repo_df.reindex(common_idx)
+    holding_period_df = holding_period_df.reindex(common_idx)
+    for m in ois_by_month:
+        ois_by_month[m] = ois_by_month[m].reindex(common_idx)
+
+    tenors = list(TENOR_CONTRACTS.keys())
+    holding_months = holding_period_df[tenors].astype(float) / (365.0 / 12.0)
+    ois_row = np.array([ois_by_month[m].values for m in OIS_MONTH_TENORS])
+    n_dates = len(common_idx)
+    ois_interp_bps = np.full((n_dates, len(tenors)), np.nan)
+    for i in range(n_dates):
+        ois_pct_row = ois_row[:, i]
+        if np.any(np.isnan(ois_pct_row)):
+            continue
+        for j, tn in enumerate(tenors):
+            months_j = holding_months.iloc[i, j]
+            if np.isnan(months_j):
+                continue
+            rate_pct = _interpolate_ois_at_holding_period(
+                np.array([months_j]), ois_pct_row, OIS_MONTH_TENORS
+            )[0]
+            ois_interp_bps[i, j] = rate_pct * 100.0  # percent -> bps
+    return pd.DataFrame(ois_interp_bps, index=common_idx, columns=tenors).sort_index()
+
+
 def main():
+    """Run full pipeline: compute implied repo and holding period, then arbitrage spreads; write parquets."""
     manual_dir = MANUAL_DATA_DIR
     print(f"Data directory: {manual_dir}")
     try:

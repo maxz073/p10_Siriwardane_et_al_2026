@@ -82,6 +82,7 @@ def build_png_chart(df: pd.DataFrame, tenors: list[str], output_path: Path):
 
 
 def main():
+    """Load arbitrage spreads, build HTML and PNG charts by tenor, and write to OUTPUT_DIR."""
     spread_path = DATA_DIR / "arbitrage_spreads.parquet"
     html_path = OUTPUT_DIR / "arbitrage_spreads_by_tenor.html"
     png_path = OUTPUT_DIR / "arbitrage_spreads_by_tenor.png"
