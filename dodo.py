@@ -138,8 +138,8 @@ SPREAD_OUTPUTS = [
 ]
 
 PLOT_OUTPUTS = [
-    OUTPUT_DIR / "treasury_futures_prices.html",
-    OUTPUT_DIR / "example_plot.png",
+    OUTPUT_DIR / "arbitrage_spreads_by_tenor.html",
+    OUTPUT_DIR / "arbitrage_spreads_by_tenor.png",
 ]
 
 TABLE_OUTPUTS = [
@@ -218,18 +218,18 @@ def task_calc_spreads():
     }
 
 
-def task_example_plot():
-    """Generate chartbook HTML chart and report-ready PNG figure."""
+def task_plot_spreads():
+    """Generate arbitrage spread plots (HTML + PNG) by tenor."""
     return {
         "actions": [
-            "ipython ./src/example_plot.py",
+            "python ./src/plot_spreads.py",
         ],
         "file_dep": [
-            "./src/example_plot.py",
-            DATA_DIR / "bloomberg.parquet",
+            "./src/plot_spreads.py",
+            DATA_DIR / "arbitrage_spreads.parquet",
         ],
         "targets": PLOT_OUTPUTS,
-        "task_dep": ["stage_manual_data"],
+        "task_dep": ["calc_spreads"],
         "clean": True,
     }
 
@@ -275,7 +275,7 @@ def task_run_notebooks():
                 OUTPUT_DIR / f"{notebook}.ipynb",
                 *notebook_tasks[notebook]["targets"],
             ],
-            "task_dep": ["config"],
+            "task_dep": ["compile_latex_docs"],
             "clean": True,
         }
 # fmt: on
@@ -291,7 +291,7 @@ def task_compile_latex_docs():
         "./reports/my_common_header.sty",
         "./reports/report_simple_example.tex",
         "./reports/slides_simple_example.tex",
-        OUTPUT_DIR / "example_plot.png",
+        OUTPUT_DIR / "arbitrage_spreads_by_tenor.png",
         OUTPUT_DIR / "example_table.tex",
         OUTPUT_DIR / "pandas_to_latex_simple_table1.tex",
     ]
@@ -315,7 +315,7 @@ def task_compile_latex_docs():
         ],
         "targets": targets,
         "file_dep": file_dep,
-        "task_dep": ["summary_stats", "example_plot"],
+        "task_dep": ["summary_stats", "plot_spreads"],
         "clean": True,
     }
 
@@ -332,10 +332,10 @@ def task_build_chartbook_site():
             "./README.md",
             "./chartbook.toml",
             DATA_DIR / "bloomberg.parquet",
-            OUTPUT_DIR / "treasury_futures_prices.html",
+            OUTPUT_DIR / "arbitrage_spreads_by_tenor.html",
             *notebook_scripts,
         ],
-        "task_dep": ["run_notebooks", "example_plot"],
+        "task_dep": ["run_notebooks", "plot_spreads"],
         "clean": True,
     }
 

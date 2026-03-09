@@ -4,6 +4,7 @@ the arbitrage spread between the implied repo rate and the OIS rate.
 
 Data Inputs: data_manual/bloomberg.parquet, data_manual/TFZ_IRR.parquet.
 """
+from __future__ import annotations
 
 from pathlib import Path
 
