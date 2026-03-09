@@ -111,9 +111,8 @@ def walkthrough_one_date(
         print(f"    fut_dlv_dt_last = {row['fut_dlv_dt_last']}")
         print("  (from bond / CRSP)")
         P = float(row["clean_price"])
-        Ab = float(row["accrued_interest_begin"])
         print(f"    clean_price (P) = {P}")
-        print(f"    accrued_interest_begin (Ab) = {Ab}")
+        print(f"    accrued_interest_begin (from bond) = {float(row['accrued_interest_begin'])}  [Ab used in IRR is computed at settlement T+1 below]")
         print(f"    coupon_rate = {row['coupon_rate']}")
         print(f"    coupon_frequency = {row.get('coupon_frequency', 2)}")
         print(f"    next_coupon_date = {row['next_coupon_date']}")
@@ -125,31 +124,40 @@ def walkthrough_one_date(
         m_last = _compute_ae_ic_d1_d2(one.copy(), "fut_dlv_dt_last").iloc[0]
 
         def print_intermediates_for_delivery(label: str, m: pd.Series, delivery_col: str) -> float | None:
-            """Print intermediates for one delivery date; return IRR in bps or None."""
+            """Print intermediates for one delivery date; return IRR in bps or None. Matches calc_spread._compute_ae_ic_d1_d2 and _irr_series."""
             freq = int(row.get("coupon_frequency", 2))
             coupon_cash = float(row["coupon_rate"]) / freq
             caldt = pd.Timestamp(walk_date).normalize()
             delivery = pd.Timestamp(m[delivery_col])
             next_cpn = pd.Timestamp(row["next_coupon_date"])
             prev_cpn = pd.Timestamp(row["prev_coupon_date"])
+            # Settlement T+1 business day (carry starts on settlement)
+            settlement_date = caldt + pd.offsets.BDay(1)
+            # Ab = accrued at settlement (computed in _compute_ae_ic_d1_d2)
+            Ab_settle = float(m["Ab"])
             last_cpn = prev_cpn if delivery < next_cpn else next_cpn
-            period_end = next_cpn if delivery < next_cpn else next_cpn + pd.DateOffset(months=12 // freq)
+            period_end = next_cpn if delivery < next_cpn else next_cpn + pd.DateOffset(months=6)
             period_days = (period_end - last_cpn).days
             accrued_days_end = (delivery - last_cpn).days
             Ae = float(m["Ae"])
             Ic = float(m["Ic"])
-            d1 = float(m["d1"])
+            d1 = float(m["d1"])  # (delivery - settlement_date).days / 360
             d2 = float(m["d2"])
+            ex_coupon_date = next_cpn - pd.offsets.BDay(1)
+            mask_cpn = (caldt < ex_coupon_date) and (ex_coupon_date <= delivery)
+
             print(f"  INTERMEDIATES — {label}")
             print(f"    coupon_cash_per_period = coupon_rate / freq = {row['coupon_rate']} / {freq} = {coupon_cash:.6f}")
+            print(f"    settlement_date = caldt + BDay(1) = {settlement_date.date()}")
+            print(f"    Ab (accrued at settlement) = {Ab_settle:.6f}")
             print(f"    next_coupon_date = {next_cpn.date()}, prev_coupon_date = {prev_cpn.date()}, delivery = {delivery.date()}")
             print(f"    last_cpn_before_delivery = {last_cpn.date()}, period_end = {period_end.date()}")
             print(f"    period_days = {period_days}, accrued_days_end = {accrued_days_end}")
             print(f"    Ae = coupon_cash * accrued_days_end / period_days = {Ae:.6f}")
-            mask_cpn = (next_cpn > caldt) and (next_cpn <= delivery)
-            print(f"    coupon between caldt and delivery? (mask_cpn) = {mask_cpn}")
-            print(f"    Ic = {Ic:.6f}, d1 (years Act/360) = {d1:.6f}, d2 = {d2:.6f}")
-            P_Ab = P + Ab
+            print(f"    ex_coupon_date = next_cpn - BDay(1) = {ex_coupon_date.date()}")
+            print(f"    mask_cpn (caldt < ex_coupon <= delivery): {mask_cpn}")
+            print(f"    Ic = {Ic:.6f}, d1 = (delivery - settlement).days/360 = {d1:.6f}, d2 = {d2:.6f}")
+            P_Ab = P + Ab_settle
             num = (F * CF) + Ae + Ic - P_Ab
             denom = (d1 * P_Ab) - (Ic * d2)
             print(f"    numerator = F*CF + Ae + Ic - (P+Ab) = {F}*{CF} + {Ae:.4f} + {Ic:.4f} - {P_Ab:.4f} = {num:.6f}")
