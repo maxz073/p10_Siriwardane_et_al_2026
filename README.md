@@ -29,16 +29,22 @@ Also install the required TeX dependencies (Linux):
 sudo apt-get install -y texlive-full # on Windows: https://tex.stackexchange.com/questions/666988/is-there-any-faster-way-to-install-texlive-on-windows
 ```
 
+Before you can run the project tasks, you may need to refer to "Setting Environment Variables" to set your `WRDS_USERNAME` if you do not have the CRSP or bloomberg data in `data_manual/`.
+
 Finally, run the project tasks:
 ```bash
 doit
 ```
-And that's it!
-
 
 ### Other commands
 
 #### Unit Tests and Doc Tests
+
+You can run all the unit tests just by running the following from the repo root:
+
+```
+pytest
+```
 
 You can run the unit test, including doctests, with the following command:
 ```

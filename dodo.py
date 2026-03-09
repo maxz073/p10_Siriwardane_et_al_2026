@@ -31,26 +31,9 @@ def jupyter_execute_notebook(notebook_path):
     return f"jupyter nbconvert --execute --to notebook --ClearMetadataPreprocessor.enabled=True --log-level WARN --inplace {notebook_path}"
 def jupyter_to_html(notebook_path, output_dir=OUTPUT_DIR):
     return f"jupyter nbconvert --to html --log-level WARN --output-dir={output_dir} {notebook_path}"
-def jupyter_to_md(notebook_path, output_dir=OUTPUT_DIR):
-    return f"jupytext --to markdown --log-level WARN --output-dir={output_dir} {notebook_path}"
-def jupyter_clear_output(notebook_path):
-    return f"jupyter nbconvert --log-level WARN --ClearOutputPreprocessor.enabled=True --ClearMetadataPreprocessor.enabled=True --inplace {notebook_path}"
 def jupytext_to_notebook(pyfile_path, notebook_path):
     return f"jupytext --to notebook --output {notebook_path} {pyfile_path}"
 # fmt: on
-
-
-def copy_file(origin_path, destination_path, mkdir=True):
-    """Create a Python action for copying a file."""
-
-    def _copy_file():
-        origin = Path(origin_path)
-        dest = Path(destination_path)
-        if mkdir:
-            dest.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(origin, dest)
-
-    return _copy_file
 
 
 def mv_file(from_path, to_path):
@@ -126,11 +109,6 @@ notebook_tasks = {
     },
 }
 
-MANUAL_INPUTS = [
-    MANUAL_DATA_DIR / "bloomberg.parquet",
-    MANUAL_DATA_DIR / "TFZ_IRR.parquet",
-]
-
 STAGED_INPUTS = [
     DATA_DIR / "bloomberg.parquet",
     DATA_DIR / "TFZ_IRR.parquet",
@@ -185,15 +163,70 @@ def task_config():
 
 
 def task_stage_manual_data():
-    """Copy version-controlled input data from data_manual to DATA_DIR."""
+    """Stage inputs from data_manual, or pull live data if manual files are missing."""
+
+    def _stage_or_pull_inputs():
+        DATA_DIR.mkdir(parents=True, exist_ok=True)
+
+        input_specs = [
+            {
+                "name": "Bloomberg",
+                "manual_path": MANUAL_DATA_DIR / "bloomberg.parquet",
+                "staged_path": DATA_DIR / "bloomberg.parquet",
+                "pull_script": "./src/pull_bloomberg.py",
+            },
+            {
+                "name": "CRSP",
+                "manual_path": MANUAL_DATA_DIR / "TFZ_IRR.parquet",
+                "staged_path": DATA_DIR / "TFZ_IRR.parquet",
+                "pull_script": "./src/pull_CRSP.py",
+            },
+        ]
+
+        for spec in input_specs:
+            manual_path = spec["manual_path"]
+            staged_path = spec["staged_path"]
+
+            if manual_path.exists():
+                staged_path.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(manual_path, staged_path)
+                print(f"Staged {spec['name']} data from {manual_path} -> {staged_path}")
+                continue
+
+            if staged_path.exists():
+                print(
+                    f"Manual {spec['name']} data missing at {manual_path}; "
+                    f"using existing staged file {staged_path}."
+                )
+                continue
+
+            print(
+                f"Manual {spec['name']} data missing at {manual_path}; "
+                f"pulling via {spec['pull_script']}..."
+            )
+            cmd = [
+                sys.executable,
+                spec["pull_script"],
+                f"--DATA_DIR={DATA_DIR}",
+            ]
+            subprocess.run(cmd, check=True)
+
+            if not staged_path.exists():
+                raise FileNotFoundError(
+                    f"Expected {staged_path} after running {spec['pull_script']}, "
+                    "but it was not created."
+                )
+
     return {
-        "actions": [
-            copy_file(MANUAL_DATA_DIR / "bloomberg.parquet", DATA_DIR / "bloomberg.parquet"),
-            copy_file(MANUAL_DATA_DIR / "TFZ_IRR.parquet", DATA_DIR / "TFZ_IRR.parquet"),
+        "actions": [_stage_or_pull_inputs],
+        "file_dep": [
+            "./src/settings.py",
+            "./src/pull_bloomberg.py",
+            "./src/pull_CRSP.py",
         ],
-        "file_dep": MANUAL_INPUTS,
         "targets": STAGED_INPUTS,
         "task_dep": ["config"],
+        "uptodate": [False],
         "clean": True,
     }
 
@@ -341,7 +374,7 @@ def task_compile_latex_docs():
         ],
         "targets": targets,
         "file_dep": file_dep,
-        "task_dep": ["underlying_data_exhibits", "plot_spreads"],
+        "task_dep": ["run_tests", "underlying_data_exhibits", "plot_spreads"],
         "clean": True,
     }
 
@@ -383,7 +416,7 @@ def task_run_tests():
     return {
         "actions": [
             CmdAction(
-                f"pytest ./src/ --junitxml={OUTPUT_DIR / 'test_results.xml'} -v",
+                f"{sys.executable} -m pytest ./src/ --junitxml={OUTPUT_DIR / 'test_results.xml'} -v",
                 shell=True,
             ),
         ],
@@ -400,6 +433,7 @@ def task_full_run():
     return {
         "actions": [],
         "task_dep": [
+            "run_tests",
             "underlying_data_exhibits",
             "compile_latex_docs",
             "build_chartbook_site",

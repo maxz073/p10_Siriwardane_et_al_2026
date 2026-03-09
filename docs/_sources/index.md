@@ -47,7 +47,7 @@ apidocs/index
 | Contributors                    | George Lord, Max Zhalilo           |
 | Git Repo URL                    |                         |
 | Pipeline Web Page               | <a href="file:///mnt/c/Users/George/Documents/GitHub/p10_Siriwardane_et_al_2026/docs/index.html">Pipeline Web Page      |
-| Date of Last Code Update        | 2026-03-08 23:14:44           |
+| Date of Last Code Update        | 2026-03-08 23:49:30           |
 | OS Compatibility                |  |
 | Linked Dataframes               |  [TR:bloomberg](./dataframes/TR/bloomberg.md)<br>  |
 
@@ -83,16 +83,22 @@ Also install the required TeX dependencies (Linux):
 sudo apt-get install -y texlive-full # on Windows: https://tex.stackexchange.com/questions/666988/is-there-any-faster-way-to-install-texlive-on-windows
 ```
 
+Before you can run the project tasks, you may need to refer to "Setting Environment Variables" to set your `WRDS_USERNAME` if you do not have the CRSP or bloomberg data in `data_manual/`.
+
 Finally, run the project tasks:
 ```bash
 doit
 ```
-And that's it!
-
 
 ### Other commands
 
 #### Unit Tests and Doc Tests
+
+You can run all the unit tests just by running the following from the repo root:
+
+```
+pytest
+```
 
 You can run the unit test, including doctests, with the following command:
 ```

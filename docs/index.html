@@ -424,7 +424,7 @@ document.write(`
                 <article class="bd-article">
                    <section class="tex2jax_ignore mathjax_ignore" id="treasury-spot-futures">
 <h1>Treasury Spot-Futures<a class="headerlink" href="#treasury-spot-futures" title="Link to this heading">#</a></h1>
-<p>Last updated: Mar 9, 2026, 4:20:02 AM</p>
+<p>Last updated: Mar 9, 2026, 4:53:02 AM</p>
 <section id="table-of-contents">
 <h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
@@ -476,7 +476,7 @@ document.write(`
 <td><p><a href="file:///mnt/c/Users/George/Documents/GitHub/p10_Siriwardane_et_al_2026/docs/index.html">Pipeline Web Page</p></td>
 </tr>
 <tr class="row-odd"><td><p>Date of Last Code Update</p></td>
-<td><p>2026-03-08 23:14:44</p></td>
+<td><p>2026-03-08 23:49:30</p></td>
 </tr>
 <tr class="row-even"><td><p>OS Compatibility</p></td>
 <td><p></p></td>
@@ -511,15 +511,19 @@ and <a class="reference external" href="https://tug.org/mactex/mactex-download.h
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>texlive-full<span class="w"> </span><span class="c1"># on Windows: https://tex.stackexchange.com/questions/666988/is-there-any-faster-way-to-install-texlive-on-windows</span>
 </pre></div>
 </div>
+<p>Before you can run the project tasks, you may need to refer to “Setting Environment Variables” to set your <code class="docutils literal notranslate"><span class="pre">WRDS_USERNAME</span></code> if you do not have the CRSP or bloomberg data in <code class="docutils literal notranslate"><span class="pre">data_manual/</span></code>.</p>
 <p>Finally, run the project tasks:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>doit
 </pre></div>
 </div>
-<p>And that’s it!</p>
 <section id="other-commands">
 <h3>Other commands<a class="headerlink" href="#other-commands" title="Link to this heading">#</a></h3>
 <section id="unit-tests-and-doc-tests">
 <h4>Unit Tests and Doc Tests<a class="headerlink" href="#unit-tests-and-doc-tests" title="Link to this heading">#</a></h4>
+<p>You can run all the unit tests just by running the following from the repo root:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pytest</span>
+</pre></div>
+</div>
 <p>You can run the unit test, including doctests, with the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pytest</span> <span class="o">--</span><span class="n">doctest</span><span class="o">-</span><span class="n">modules</span>
 </pre></div>
