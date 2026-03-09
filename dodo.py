@@ -142,9 +142,31 @@ PLOT_OUTPUTS = [
     OUTPUT_DIR / "arbitrage_spreads_by_tenor.png",
 ]
 
-TABLE_OUTPUTS = [
-    OUTPUT_DIR / "example_table.tex",
-    OUTPUT_DIR / "pandas_to_latex_simple_table1.tex",
+UNDERLYING_EXHIBIT_OUTPUTS = [
+    OUTPUT_DIR / "underlying_summary_stats_tabular.tex",
+    OUTPUT_DIR / "underlying_summary_stats_table.tex",
+    OUTPUT_DIR / "futures_input_coverage_tabular.tex",
+    OUTPUT_DIR / "futures_input_coverage_table.tex",
+    OUTPUT_DIR / "ois_input_summary_tabular.tex",
+    OUTPUT_DIR / "ois_input_summary_table.tex",
+    OUTPUT_DIR / "ctd_bond_input_coverage_tabular.tex",
+    OUTPUT_DIR / "ctd_bond_input_coverage_table.tex",
+    OUTPUT_DIR / "holding_period_summary_tabular.tex",
+    OUTPUT_DIR / "holding_period_summary_table.tex",
+    OUTPUT_DIR / "spread_component_summary_tabular.tex",
+    OUTPUT_DIR / "spread_component_summary_table.tex",
+    OUTPUT_DIR / "underlying_futures_prices_by_tenor.png",
+    OUTPUT_DIR / "underlying_futures_prices_by_tenor.html",
+    OUTPUT_DIR / "underlying_futures_prices_figure.tex",
+    OUTPUT_DIR / "ois_input_rates.png",
+    OUTPUT_DIR / "ois_input_rates.html",
+    OUTPUT_DIR / "ois_input_rates_figure.tex",
+    OUTPUT_DIR / "holding_period_days_by_tenor.png",
+    OUTPUT_DIR / "holding_period_days_by_tenor.html",
+    OUTPUT_DIR / "holding_period_days_by_tenor_figure.tex",
+    OUTPUT_DIR / "implied_repo_vs_interpolated_ois_by_tenor.png",
+    OUTPUT_DIR / "implied_repo_vs_interpolated_ois_by_tenor.html",
+    OUTPUT_DIR / "implied_repo_vs_interpolated_ois_by_tenor_figure.tex",
 ]
 
 
@@ -234,19 +256,21 @@ def task_plot_spreads():
     }
 
 
-def task_summary_stats():
-    """Generate LaTeX tables used by reports."""
+def task_underlying_data_exhibits():
+    """Generate additional summary-stat table and underlying-data chart for the writeup."""
     return {
         "actions": [
-            "ipython ./src/example_table.py",
-            "ipython ./src/pandas_to_latex_demo.py",
+            "python ./src/underlying_data_exhibits.py",
         ],
         "file_dep": [
-            "./src/example_table.py",
-            "./src/pandas_to_latex_demo.py",
+            "./src/underlying_data_exhibits.py",
+            DATA_DIR / "bloomberg.parquet",
+            DATA_DIR / "TFZ_IRR.parquet",
+            DATA_DIR / "implied_repo_first_deferred.parquet",
+            DATA_DIR / "holding_period_days.parquet",
             DATA_DIR / "arbitrage_spreads.parquet",
         ],
-        "targets": TABLE_OUTPUTS,
+        "targets": UNDERLYING_EXHIBIT_OUTPUTS,
         "task_dep": ["calc_spreads"],
         "clean": True,
     }
@@ -282,40 +306,37 @@ def task_run_notebooks():
 
 
 def task_compile_latex_docs():
-    """Compile the LaTeX documents to PDFs."""
+    """Compile the single replication summary document to PDF."""
     file_dep = [
-        "./reports/report_example.tex",
-        "./reports/my_article_header.sty",
-        "./reports/slides_example.tex",
-        "./reports/my_beamer_header.sty",
-        "./reports/my_common_header.sty",
-        "./reports/report_simple_example.tex",
-        "./reports/slides_simple_example.tex",
+        "./reports/replication_summary.tex",
         OUTPUT_DIR / "arbitrage_spreads_by_tenor.png",
-        OUTPUT_DIR / "example_table.tex",
-        OUTPUT_DIR / "pandas_to_latex_simple_table1.tex",
+        OUTPUT_DIR / "underlying_summary_stats_table.tex",
+        OUTPUT_DIR / "futures_input_coverage_table.tex",
+        OUTPUT_DIR / "ois_input_summary_table.tex",
+        OUTPUT_DIR / "ctd_bond_input_coverage_table.tex",
+        OUTPUT_DIR / "holding_period_summary_table.tex",
+        OUTPUT_DIR / "spread_component_summary_table.tex",
+        OUTPUT_DIR / "underlying_futures_prices_by_tenor.png",
+        OUTPUT_DIR / "ois_input_rates.png",
+        OUTPUT_DIR / "holding_period_days_by_tenor.png",
+        OUTPUT_DIR / "implied_repo_vs_interpolated_ois_by_tenor.png",
+        OUTPUT_DIR / "underlying_futures_prices_figure.tex",
+        OUTPUT_DIR / "ois_input_rates_figure.tex",
+        OUTPUT_DIR / "holding_period_days_by_tenor_figure.tex",
+        OUTPUT_DIR / "implied_repo_vs_interpolated_ois_by_tenor_figure.tex",
     ]
     targets = [
-        "./reports/report_example.pdf",
-        "./reports/slides_example.pdf",
-        "./reports/report_simple_example.pdf",
-        "./reports/slides_simple_example.pdf",
+        "./reports/replication_summary.pdf",
     ]
 
     return {
         "actions": [
-            run_latexmk("./reports/report_example.tex"),
-            run_latexmk("./reports/report_example.tex", clean=True),
-            run_latexmk("./reports/slides_example.tex"),
-            run_latexmk("./reports/slides_example.tex", clean=True),
-            run_latexmk("./reports/report_simple_example.tex"),
-            run_latexmk("./reports/report_simple_example.tex", clean=True),
-            run_latexmk("./reports/slides_simple_example.tex"),
-            run_latexmk("./reports/slides_simple_example.tex", clean=True),
+            run_latexmk("./reports/replication_summary.tex"),
+            run_latexmk("./reports/replication_summary.tex", clean=True),
         ],
         "targets": targets,
         "file_dep": file_dep,
-        "task_dep": ["summary_stats", "plot_spreads"],
+        "task_dep": ["underlying_data_exhibits", "plot_spreads"],
         "clean": True,
     }
 
@@ -362,6 +383,7 @@ def task_full_run():
     return {
         "actions": [],
         "task_dep": [
+            "underlying_data_exhibits",
             "compile_latex_docs",
             "build_chartbook_site",
         ],
