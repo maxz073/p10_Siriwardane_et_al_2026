@@ -1,0 +1,83 @@
+% Single deliverable report for the Treasury spot-futures replication.
+% How to edit:
+% 1) Replace each \writehere{...} with your own prose.
+% 2) You can write multiple paragraphs by deleting \writehere and typing normal LaTeX text.
+
+\newcommand*{\PathToOutput}{../_output}
+
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{setspace}
+\usepackage{hyperref}
+
+\newcommand{\writehere}[1]{\textit{[WRITE HERE: #1]}}
+
+\title{Replication Summary: Treasury Spot-Futures Arbitrage Spreads}
+\author{Insert Author(s)}
+\date{\today}
+
+\begin{document}
+\maketitle
+\onehalfspacing
+
+\section{Project Overview}
+\writehere{Briefly describe what you replicated, why it matters, and whether the broad pattern in the target figure was replicated.}
+
+\section{Data Sources}
+\writehere{Describe how data was sourced, any date ranges, and any constraints you faced.}
+\begin{itemize}
+\item Bloomberg data: futures contract inputs and OIS rates used in spread construction.
+\item CRSP/WRDS bond data: CTD bond-side inputs used in implied repo calculations.
+\end{itemize}
+
+\section{Replication Deliverable: Arbitrage Spread Plot}
+\writehere{Summarize what the deliverable figure shows and the key economic takeaway.}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.9\linewidth]{\PathToOutput/arbitrage_spreads_by_tenor.png}
+\caption{Replicated treasury spot-futures arbitrage spreads by tenor over time.}
+\label{fig:replication_deliverable_spread}
+\end{figure}
+
+\clearpage
+\section{Supporting Tables (Inputs and Components)}
+\writehere{Explain what these tables tell the reader about the exact data pieces used to compute the spreads.}
+
+\input{\PathToOutput/underlying_summary_stats_table.tex}
+\input{\PathToOutput/futures_input_coverage_table.tex}
+\input{\PathToOutput/ois_input_summary_table.tex}
+\input{\PathToOutput/ctd_bond_input_coverage_table.tex}
+\input{\PathToOutput/holding_period_summary_table.tex}
+\input{\PathToOutput/spread_component_summary_table.tex}
+
+\clearpage
+\section{Supporting Figures (Inputs and Components)}
+\writehere{Explain how these figures validate and contextualize the spread construction inputs.}
+
+\input{\PathToOutput/underlying_futures_prices_figure.tex}
+\input{\PathToOutput/ois_input_rates_figure.tex}
+\input{\PathToOutput/holding_period_days_by_tenor_figure.tex}
+\input{\PathToOutput/implied_repo_vs_interpolated_ois_by_tenor_figure.tex}
+
+\section{Replication Assessment}
+\subsection{Where the replication succeeded}
+\writehere{State where you matched the original paper most closely.}
+
+\subsection{Challenges and limitations}
+\writehere{Discuss the hardest parts: data availability, cleaning, mapping contracts, interpolation choices, and any unresolved gaps.}
+
+\subsection{Interactive chart outputs}
+\writehere{Optional: mention how readers can inspect the interactive HTML versions in the output folder.}
+\begin{itemize}
+\item \texttt{../\_output/arbitrage\_spreads\_by\_tenor.html}
+\item \texttt{../\_output/underlying\_futures\_prices\_by\_tenor.html}
+\item \texttt{../\_output/ois\_input\_rates.html}
+\item \texttt{../\_output/holding\_period\_days\_by\_tenor.html}
+\item \texttt{../\_output/implied\_repo\_vs\_interpolated\_ois\_by\_tenor.html}
+\end{itemize}
+
+\end{document}

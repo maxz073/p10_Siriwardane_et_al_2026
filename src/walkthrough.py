@@ -2,6 +2,7 @@
 Single-date walkthrough: print inputs and steps for IRR (max of first/last delivery).
 Run: python walkthrough.py [DATE]
 """
+from __future__ import annotations
 
 from pathlib import Path
 

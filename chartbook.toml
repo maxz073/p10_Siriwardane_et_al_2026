@@ -23,10 +23,10 @@ README_file_path = "./README.md"
 [notebooks]
 
 
-[notebooks.01_example_notebook_interactive]
-notebook_name = "Example Notebook Interactive"
-notebook_description = "Example notebook for demonstrating how to construct a Chartbook notebook."
-notebook_path = "_output/01_example_notebook_interactive_ipynb.ipynb"
+[notebooks.treasury_spot_futures_tour]
+notebook_name = "Treasury Spot-Futures Project Tour"
+notebook_description = "Guided tour of cleaned inputs, spread calculations, and core arbitrage spread output."
+notebook_path = "_output/treasury_spot_futures_tour_ipynb.ipynb"
 
 
 
@@ -58,20 +58,20 @@ dataframe_docs_path = "./docs_src/dataframes/bloomberg.md"
 
 
 [charts.treasury_futures_prices]
-chart_name = "Treasury Futures Prices Over Time"
-short_description_chart = "Time series visualization of Treasury futures prices across different maturities (2Y, 5Y, 10Y, 30Y, Ultra 10Y) showing first and second generic contracts."
+chart_name = "Arbitrage Spreads by Tenor"
+short_description_chart = "Time series of Treasury spot-futures arbitrage spreads for 2Y, 5Y, 10Y, 20Y, and 30Y tenors."
 dataframe_id = "bloomberg"
-topic_tags = ["Treasury Futures", "Fixed Income", "Prices"]
+topic_tags = ["Treasury Futures", "Arbitrage", "Fixed Income", "Spreads"]
 data_series_start_date = "2010-01-01"
 data_frequency = "Daily"
 observation_period = "Weekday"
 lag_in_data_release = "One day"
 data_release_dates = "Weekday"
 seasonal_adjustment = "None"
-units = "Price"
-data_series = "TY1 Comdty, FV1 Comdty, TU1 Comdty, US1 Comdty, WN1 Comdty, TY2 Comdty, FV2 Comdty, TU2 Comdty, US2 Comdty, WN2 Comdty"
+units = "Basis Points"
+data_series = "2Y, 5Y, 10Y, 20Y, 30Y arbitrage spreads"
 mnemonic = ""
-path_to_html_chart = "./_output/treasury_futures_prices.html"
+path_to_html_chart = "./_output/arbitrage_spreads_by_tenor.html"
 path_to_excel_chart = ""
 chart_docs_path = "./docs_src/charts/treasury_futures_prices.md"
 
