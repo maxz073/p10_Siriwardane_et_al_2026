@@ -332,7 +332,7 @@ def build_holding_period_summary_table(holding_period_days: pd.DataFrame) -> pd.
 
 
 def interpolate_ois_to_holding_period(ois_inputs: pd.DataFrame, holding_period_days: pd.DataFrame) -> pd.DataFrame:
-    """Interpolate OIS from 2M/3M/6M onto tenor-specific holding periods (in bps)."""
+    """Interpolate OIS from 2M/3M/4M/5M/6M/9M onto tenor-specific holding periods (in bps)."""
     missing_cols = [f"{month}M OIS" for month in OIS_MONTH_ORDER if f"{month}M OIS" not in ois_inputs.columns]
     if missing_cols:
         raise ValueError(f"Missing OIS input columns required for interpolation: {missing_cols}")
@@ -445,10 +445,10 @@ def build_underlying_futures_prices_chart(bloomberg: pd.DataFrame):
 
 
 def build_ois_input_chart(ois_inputs: pd.DataFrame):
-    """Build OIS input rates chart (2M, 3M, 6M) and write PNG/HTML/TeX."""
+    """Build OIS input rates chart (2M, 3M, 4M, 5M, 6M, 9M) and write PNG/HTML/TeX."""
     write_line_chart(
         df=ois_inputs,
-        title="OIS Inputs Used for Interpolation (2M, 3M, 6M)",
+        title="OIS Inputs Used for Interpolation (2M, 3M, 4M, 5M, 6M, 9M)",
         y_label="Rate (%)",
         png_filename="ois_input_rates.png",
         html_filename="ois_input_rates.html",
@@ -457,7 +457,7 @@ def build_ois_input_chart(ois_inputs: pd.DataFrame):
         snippet_filename="ois_input_rates_figure.tex",
         image_filename="ois_input_rates.png",
         caption=(
-            "OIS input rates at 2M, 3M, and 6M. Takeaway: these are representative "
+            "OIS input rates at 2M, 3M, 4M, 5M, 6M, and 9M. Takeaway: these are representative "
             "curve points used to summarize financing-rate conditions in the writeup."
         ),
         label="fig:ois_input_rates",
