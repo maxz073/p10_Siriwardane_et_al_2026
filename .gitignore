@@ -3,8 +3,8 @@
 # Project Input and Output
 ##########################
 
-# Large data files (use parquet; avoid pushing big CSVs)
-data_manual/TFZ_IRR.csv
+# Large data files in data_manual (keep folder and .md, exclude parquet)
+data_manual/*.parquet
 
 # Exclude _data folder, since it should all be pulled automatically (unless in the manual folder)
 /_data/*
